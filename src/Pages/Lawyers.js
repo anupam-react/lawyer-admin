@@ -72,11 +72,8 @@ const Lawyers = () => {
         alert("record had deleted");
         
         window.location.reload();
-      } catch{
-        ((err) => {
+      } catch (err){
           console.log(err);
-        })
-
       }
    
     } else {
