@@ -10,12 +10,16 @@ import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import { useNavigate } from "react-router-dom";
 import { headers } from "../utlis/config";
+import { createApiData, fetchApiData } from "../utlis";
 
 const Cases = () => {
   const [editcases, setEditcases] = useState(false);
   const [newcases, setnewcases] = useState(false);
   const [deletepopup, setDeletepopup] = useState(false);
   const [data, setData] = useState("");
+  const [newCaseData , setNewCaseData] = useState([])
+  const [oldCaseData , setOldCaseData] = useState([])
+  const [closeCaseData , setCloseCaseData] = useState([])
 
   const [selectedDiv, setSelectedDiv] = useState("All Cases");
 
@@ -29,20 +33,62 @@ const Cases = () => {
   const [type, setType] = useState("General");
   const [editItemId, setEditItemId] = useState(null);
   const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+
+    // Logic to calculate the index of the last item on the current page
+    const lastIndex = currentPage * itemsPerPage;
+    // Logic to calculate the index of the first item on the current page
+    const firstIndex = lastIndex - itemsPerPage;
+    // Slice the data array to get the items for the current page
+    let currentItems = selectedDiv === "All Cases" ? data?.slice(firstIndex, lastIndex) : selectedDiv === "Old Cases" ? oldCaseData?.slice(firstIndex, lastIndex) :  selectedDiv === "New Cases" ? newCaseData?.slice(firstIndex, lastIndex) : selectedDiv === "Closed Cases" ? closeCaseData?.slice(firstIndex, lastIndex) :  data?.slice(firstIndex, lastIndex)
+
+  // Function to handle next page
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  // Function to handle previous page
+  const prevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+
+
+
   /////////fetch allcase//////////
-  function fetchAllCase() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/case/all`)
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+
+
+  const fetchAllCase = async() =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/all`)
+    console.log(data)
+    setData(data?.data?.reverse());
   }
+  const fetchNewCases = async() =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/NewCase/all`)
+    console.log(data)
+    setNewCaseData(data?.data?.reverse());
+  }
+
+  const fetchOldCases = async() =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/OldCase/all`)
+    console.log(data)
+    setOldCaseData(data?.data?.reverse());
+  }
+
+  const fetchCloseCases = async() =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/getClosed`)
+    console.log(data)
+    setCloseCaseData(data?.data?.reverse());
+  }
+
   useEffect(() => {
     fetchAllCase();
+    fetchNewCases();
+    fetchOldCases();
+    fetchCloseCases();
   }, []);
 
   ////////////delete case//////////
@@ -65,7 +111,7 @@ const Cases = () => {
   }
 
   ////////create cases //////////////
-  const handleCreateCases = (e) => {
+  const handleCreateCases = async (e) => {
     e.preventDefault();
     console.log({
       caseTitle,
@@ -88,17 +134,17 @@ const Cases = () => {
       type: type,
     };
 
-    axios
-      .post(`${Baseurl}/api/v1/admin/case/add`, requestData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("data added successfully");
-        window.location.reload();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    try {
+      await createApiData(
+        `${Baseurl}/api/v1/admin/case/add`,
+        requestData
+      );
+      alert("Data added successfully");
+      setnewcases(false);
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
   };
 
   //////Edit Cases //////////
@@ -213,6 +259,8 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Court Name"
+                    value={courtName}
+                    onChange={(e) => setCourtName(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -223,6 +271,8 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Court Number"
+                    value={courtNumber}
+                    onChange={(e) => setCourtNumber(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -231,22 +281,28 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Case Number"
+                    value={caseNumber}
+                    onChange={(e) => setCaseNumber(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label>Country</label>
                   <br />
                   <input
                     placeholder="Country"
+                    value={country}
+                    onChange={(e) => setCaseNumber(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                </div>
+                </div> */}
                 <div>
                   <label>Name of the Judge</label>
                   <br />
                   <input
                     placeholder="Name of the Judge"
+                    value={judge}
+                    onChange={(e) => setJudge(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -257,6 +313,8 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Last date of hearing"
+                    value={lastDateOfHearing}
+                    onChange={(e) => setLastDateOfHearing(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -265,6 +323,8 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Next date of hearing"
+                    value={nextHearingDate}
+                    onChange={(e) => setNextHearingDate(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -295,10 +355,10 @@ const Cases = () => {
               </div>
 
               <div className="flex justify-end gap-5 mt-20 mr-5">
-                <button className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]">
+                <div onClick={()=> setEditcases(false)} className="text-[#0F2C64] p-2 pl-5 pr-5 cursor-pointer rounded bg-white border border-[#0F2C64]">
                   Cancel
-                </button>
-                <button className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2">
+                </div>
+                <button type="submit" className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2">
                   Save Changes
                 </button>
               </div>
@@ -462,9 +522,9 @@ const Cases = () => {
                     </div>
 
                     <div className="flex justify-end gap-5 mr-5">
-                      <button className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]">
+                      <div onClick={()=> setnewcases(false)} className="text-[#0F2C64] p-2 pl-5 pr-5 rounded cursor-pointer bg-white border border-[#0F2C64]">
                         Cancel
-                      </button>
+                      </div>
                       <button
                         type="submit"
                         className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -570,6 +630,7 @@ const Cases = () => {
                     {selectedDiv && (
                       <div>
                         {selectedDiv === "All Cases" && (
+                          <div>
                           <table className="w-full border-collapse border border-slate-400 ... ">
                             <thead>
                               <tr className="">
@@ -592,7 +653,7 @@ const Cases = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {data?.data?.map((item) => (
+                              {!!data?.length && currentItems?.map((item) => (
                                 <tr className="border border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -669,6 +730,8 @@ const Cases = () => {
                               ))}
                             </tbody>
                           </table>
+                          </div>
+                          
                         )}
 
                         {selectedDiv === "Old Cases" && (
@@ -694,7 +757,7 @@ const Cases = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {data?.data?.map((item) => (
+                              {currentItems?.map((item) => (
                                 <tr className="border border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -795,7 +858,7 @@ const Cases = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {data?.data?.map((item) => (
+                              {currentItems?.map((item) => (
                                 <tr className="border border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -897,7 +960,7 @@ const Cases = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {data?.data?.map((item) => (
+                              {currentItems?.map((item) => (
                                 <tr className="border border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -958,7 +1021,7 @@ const Cases = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {data?.data?.map((item) => (
+                              {currentItems?.map((item) => (
                                 <tr className="border border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -996,8 +1059,31 @@ const Cases = () => {
                             </tbody>
                           </table>
                         )}
+                                  <nav
+              className="flex items-center flex-column flex-wrap md:flex-row justify-end px-4"
+              aria-label="Table navigation"
+            >
+
+              <div className="pagination">
+                <button
+                  onClick={prevPage}
+                  disabled={currentPage === 1}
+                  className="pagination__selected"
+                >
+                  <img src="./Vector (36).png" alt="" />
+                </button>
+                <button
+                  onClick={nextPage}
+                  // disabled={lastIndex >= transaction?.length}
+                  className="pagination__selected"
+                >
+                  <img src="./Vector (37).png" alt="" />
+                </button>
+              </div>
+            </nav>
                       </div>
                     )}
+
                   </div>
                 </>
               </>

@@ -1,6 +1,7 @@
 import { FaSearch } from "react-icons/fa";
 import dltbtn from "../Assets/dltbtn.svg";
 import edit from "../Assets/edit.svg";
+import '../css/index.css'
 import userimage from "..//Assets/userimage.svg";
 import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
@@ -10,7 +11,7 @@ import goback from "../Assets/goback.svg";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
-import { fetchApiData } from "../utlis";
+import { deleteApiData, fetchApiData, updateApiData } from "../utlis";
 const Totalusers = () => {
   const [edituser, setedituser] = useState();
   const [data, setData] = useState("");
@@ -31,14 +32,39 @@ const Totalusers = () => {
   const [district, setDistrict] = useState("");
   const [editItemId, setEditItemId] = useState(null);
   const [singleUser, setSingleUser] = useState()
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [isDelete , setDelete] = useState(false)
+
   const navigate = useNavigate();
+
+
+
+
+   // Logic to calculate the index of the last item on the current page
+   const lastIndex = currentPage * itemsPerPage;
+   // Logic to calculate the index of the first item on the current page
+   const firstIndex = lastIndex - itemsPerPage;
+   // Slice the data array to get the items for the current page
+   let currentItems = data?.slice(firstIndex, lastIndex)
+     
+ 
+   // Function to handle next page
+   const nextPage = () => {
+     setCurrentPage((prevPage) => prevPage + 1);
+   };
+ 
+   // Function to handle previous page
+   const prevPage = () => {
+     setCurrentPage((prevPage) => prevPage - 1);
+   };
 
   //////fetching user/////////
 
   async function fetchuser() {
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/users`)
     console.log(data)
-    setData(data?.data);
+    setData(data?.data?.reverse());
 
   }
 
@@ -55,29 +81,22 @@ const Totalusers = () => {
   }, []);
 
   //////////delete lawyer/////////
-  function handledelete(_id) {
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/admin/User/${_id}`, {
-          headers: headers,
-        })
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          navigate("/totalusers");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      navigate("/totalusers");
+  async function handledelete(_id) {
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/User/${_id}`);
+      setDelete(false)
+      fetchuser();
+
+    } catch (err) {
+      console.log(err);
     }
+
+   
   }
 
   //////////edit User/////////
 
-  const handleedituser = (e) => {
+  const handleedituser = async(e) => {
     e.preventDefault();
 
     // Check if passwords match
@@ -107,18 +126,15 @@ const Totalusers = () => {
     formData.append("pincode", pincode);
     formData.append("district", district);
 
-    axios
-      .put(`${Baseurl}/api/v1/admin/updateUser/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        setedituser(false)
-        // window.location.reload();
-      })
-      .catch((error) => {
+    try{
+      await updateApiData(`${Baseurl}/api/v1/admin/updateUser/${editItemId}`, formData)  
+      alert("Data Edited Successfully");
+      setedituser(false)
+      } catch (error){
         console.error("Error editing data:", error);
-      });
+      }
+
+  
   };
 
   return (
@@ -154,7 +170,7 @@ const Totalusers = () => {
 
             <div className="mt-5 flex justify-between items-center">
               <div className="text-center flex items-center gap-1">
-                <img src={singleUser?.image} alt="" className="w-[82px]" />
+                <img src={singleUser?.image} alt="" className="w-[82px] h-[82px] rounded-full" />
                 <div className="flex flex-col ">
                   <span className="text-left text-xl">{singleUser?.fullName || singleUser?.firstName + " " + singleUser?.lastName}</span>
                   <span className="text-[#8B8B8B] text-left text-[10px]">
@@ -336,7 +352,7 @@ const Totalusers = () => {
         <>
           <div>
             <div className="flex justify-between">
-              <div className="text-3xl font-semibold">ALL Users</div>
+              <div className="text-4xl font-semibold pl-6">ALL Users</div>
               <div>
                 <div className="flex justify-center items-center gap-5">
                   <div className="relative mt-2 rounded-md">
@@ -376,7 +392,7 @@ const Totalusers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {!!data?.length && data?.map((item) => (
+                  {!!data?.length && currentItems?.map((item) => (
                     <tr className="shadow-lg bg-[white] h-[80px] border-b">
                       {/* <td className="text-left">
                         <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -392,7 +408,8 @@ const Totalusers = () => {
                               className="w-[50px] h-[50px] rounded-full"
                             />
                           </div>
-                          {item.firstName}
+                          {item?.fullName ||
+                              item?.firstName + " " + item?.lastName}
                         </div>
                       </td>
                       <td className="w-[200px] text-left">{item.email}</td>
@@ -403,12 +420,40 @@ const Totalusers = () => {
                       </td>
 
                       <td className="w-[50px] text-center text-[#094DB3]">
-                        <span className="flex">
+                        <span className="flex cursor-pointer">
                           <img
                             src={dltbtn}
                             alt=""
-                            onClick={(e) => handledelete(item._id)}
+                            onClick={() => setDelete(item?._id)}
                           />
+                            {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={()=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
                           <img
                             className="cursor-pointer"
                             src={edit}
@@ -425,6 +470,38 @@ const Totalusers = () => {
                   ))}
                 </tbody>
               </table>
+              <nav
+              className="flex items-center flex-column flex-wrap md:flex-row justify-between px-4"
+              aria-label="Table navigation"
+            >
+              <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                Showing
+                <span className="font-semibold text-gray-900 dark:text-white px-1">
+                  {currentPage}
+                </span>
+                of
+                <span className="font-semibold text-gray-900 dark:text-white pl-1">
+                  {Math.ceil(data?.length / itemsPerPage)}
+                </span>
+              </span>
+
+              <div className="pagination">
+                <button
+                  onClick={prevPage}
+                  disabled={currentPage === 1}
+                  className="pagination__selected"
+                >
+                  <img src="./Vector (36).png" alt="" />
+                </button>
+                <button
+                  onClick={nextPage}
+                  // disabled={lastIndex >= transaction?.length}
+                  className="pagination__selected"
+                >
+                  <img src="./Vector (37).png" alt="" />
+                </button>
+              </div>
+            </nav>
             </div>
           </div>
         </>

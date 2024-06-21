@@ -1,4 +1,5 @@
 import { FaSearch } from "react-icons/fa";
+import "../css/index.css";
 import { useEffect, useState } from "react";
 import dltbtn from "../Assets/dltbtn.svg";
 import edit from "../Assets/edit.svg";
@@ -13,13 +14,18 @@ import Spinner from "../utlis/Spinner";
 import goback from "../Assets/goback.svg";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
-import { deleteApiData, fetchApiData } from "../utlis";
+import {
+  createApiData,
+  deleteApiData,
+  fetchApiData,
+  updateApiData,
+} from "../utlis";
 // import { headers } from "../utlis/config";
 const Lawyers = () => {
   const [editlawyers, setEditlawyers] = useState(false);
   const [addnewlawyer, setaddnewlawyer] = useState(false);
   const [data, setData] = useState([]);
-  const [lawyer , setLawyer] = useState()
+  const [lawyer, setLawyer] = useState();
 
   const [fullname, setFullname] = useState("");
   const [lastName, setLastname] = useState("");
@@ -37,52 +43,67 @@ const Lawyers = () => {
   const [barCertificateImage, setBarCertificateImage] = useState("");
   const [district, setDistrict] = useState("");
   const [pincode, setPincode] = useState("");
-  const [expertises, setExpertises] = useState([])
+  const [expertises, setExpertises] = useState([]);
 
   const [fullName, setFullName] = useState("");
 
   const [editItemId, setEditItemId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [isDelete , setDelete] = useState(false)
+
   const navigate = useNavigate();
 
-  console.log(data)
+  console.log(data);
+
+  // Logic to calculate the index of the last item on the current page
+  const lastIndex = currentPage * itemsPerPage;
+  // Logic to calculate the index of the first item on the current page
+  const firstIndex = lastIndex - itemsPerPage;
+  // Slice the data array to get the items for the current page
+  let currentItems = data?.slice(firstIndex, lastIndex);
+
+  // Function to handle next page
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  // Function to handle previous page
+  const prevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
 
   ///////////fetch lawyer////////////
   async function fetchLawyer() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/admin/lawyer`)
-    console.log(data)
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/lawyer`);
+    console.log(data);
     setData(data?.data?.reverse());
-
   }
   useEffect(() => {
     fetchLawyer();
   }, []);
 
-  const fetchSingleLawyer = async (id)=>{
-    const data = await fetchApiData(`${Baseurl}/api/v1/admin/User/${id}`)
-    console.log(data)
+  const fetchSingleLawyer = async (id) => {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/User/${id}`);
+    console.log(data);
     setLawyer(data?.data);
-  }
+  };
 
   //////////delete lawyer/////////
   async function handledelete(_id) {
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      try{
-        await deleteApiData(`${Baseurl}/api/v1/admin/User/${_id}`)
-        alert("record had deleted");
-        
-        window.location.reload();
-      } catch (err){
-          console.log(err);
+      try {
+        await deleteApiData(`${Baseurl}/api/v1/admin/User/${_id}`);
+        setDelete(false)
+        fetchLawyer();
+
+      } catch (err) {
+        console.log(err);
       }
-   
-    } else {
-      navigate("/Lawyers");
-    }
+
   }
 
   //////create lawyer/////////
-  const handlecreatelawyer = (e) => {
+  const handlecreatelawyer = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -102,23 +123,22 @@ const Lawyers = () => {
     formData.append("state", state);
     formData.append("district", district);
     formData.append("pincode", pincode);
-    formData.append("expertises", expertises);
+    // formData.append("expertises", expertises);
 
-    axios
-      .post(`${Baseurl}/api/v1/admin/CreateLawyer`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("data added successfully");
-        setaddnewlawyer(false)
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    try {
+      await createApiData(
+        "https://shlok-mittal-lawyer-backend.vercel.app/api/v1/admin/CreateLawyer",
+        formData
+      );
+      alert("Data added successfully");
+      setaddnewlawyer(false);
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
   };
 
   //////////edit Lawyer/////////
-  const handleeditLawyer = (e) => {
+  const handleeditLawyer = async (e) => {
     e.preventDefault();
     // console.log(name, email);
     console.log(editItemId);
@@ -141,22 +161,20 @@ const Lawyers = () => {
     formData.append("barRegistrationImage", barRegistrationImage);
     formData.append("barCertificateImage", barCertificateImage);
 
-    axios
-      .put(`${Baseurl}/api/v1/admin/updateLawyer/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        // window.location.reload();
-        setEditlawyers(false)
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiData(
+        `${Baseurl}/api/v1/admin/updateLawyer/${editItemId}`,
+        formData
+      );
+      alert("Data Edited Successfully");
+      setEditlawyers(false);
+    } catch (error) {
+      console.error("Error editing data:", error);
+    }
   };
 
-  console.log(lawyer)
-  console.log(expertises)
+  console.log(lawyer);
+  console.log(expertises);
 
   return (
     <>
@@ -191,9 +209,16 @@ const Lawyers = () => {
 
             <div className="mt-5 flex justify-between items-center">
               <div className="text-center flex items-center gap-1">
-                <img src={lawyer?.image } alt="" className="w-[82px] h-[82px] rounded-full" />
+                <img
+                  src={lawyer?.image}
+                  alt=""
+                  className="w-[82px] h-[82px] rounded-full"
+                />
                 <div className="flex flex-col ">
-                  <span className="text-left text-xl">{lawyer?.fullName || lawyer?.firstName + " " + lawyer?.lastName}</span>
+                  <span className="text-left text-xl">
+                    {lawyer?.fullName ||
+                      lawyer?.firstName + " " + lawyer?.lastName}
+                  </span>
                   <span className="text-[#8B8B8B] text-left text-[10px]">
                     Verified Account
                   </span>
@@ -342,7 +367,7 @@ const Lawyers = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-5  mt-10">
-              <div>
+                <div>
                   <label>Bar registration Number</label>
                   <br />
                   <input
@@ -464,7 +489,10 @@ const Lawyers = () => {
               </div>
 
               <div className="flex justify-end gap-5 mt-20 mr-5">
-                <div onClick={()=> setEditlawyers(false)} className="text-[#0F2C64] p-2 pl-5 pr-5 cursor-pointer rounded bg-white border border-[#0F2C64]">
+                <div
+                  onClick={() => setEditlawyers(false)}
+                  className="text-[#0F2C64] p-2 pl-5 pr-5 cursor-pointer rounded bg-white border border-[#0F2C64]"
+                >
                   Cancel
                 </div>
                 <button
@@ -501,7 +529,7 @@ const Lawyers = () => {
                       </span>
                     </div>
                     <hr />
-                    <form >
+                    <form>
                       <div className="flex justify-center  flex-wrap gap-5 mt-5">
                         <div>
                           <label>First Name</label>
@@ -613,8 +641,8 @@ const Lawyers = () => {
                           <label>Kyc</label>
                           <br />
                           <input
-                          value={kyc}
-                          onChange={(e) => setKyc(e.target.value)}
+                            value={kyc}
+                            onChange={(e) => setKyc(e.target.value)}
                             placeholder="Kyc"
                             className="placeholder: block w-[250px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
@@ -629,25 +657,29 @@ const Lawyers = () => {
                           />
                         </div>
                         <div>
-                  <label>Bar registration Number</label>
-                  <br />
-                  <input
-                    value={barRegistrationNo}
-                    onChange={(e) => setBarRegistrationNo(e.target.value)}
-                    placeholder="bar Registration No"
-                    className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-                <div>
-                  <label>Bar certificate No</label>
-                  <br />
-                  <input
-                    value={barCertificateNo}
-                    onChange={(e) => setBarCertificateNo(e.target.value)}
-                    placeholder="bar Certificate No"
-                    className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+                          <label>Bar registration Number</label>
+                          <br />
+                          <input
+                            value={barRegistrationNo}
+                            onChange={(e) =>
+                              setBarRegistrationNo(e.target.value)
+                            }
+                            placeholder="bar Registration No"
+                            className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          />
+                        </div>
+                        <div>
+                          <label>Bar certificate No</label>
+                          <br />
+                          <input
+                            value={barCertificateNo}
+                            onChange={(e) =>
+                              setBarCertificateNo(e.target.value)
+                            }
+                            placeholder="bar Certificate No"
+                            className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          />
+                        </div>
                         <div>
                           <label>Bar registration Image</label>
                           <br />
@@ -675,24 +707,61 @@ const Lawyers = () => {
                       <div className="ml-20">
                         <div>State Lawyer Services</div>
                         <div className="flex gap-2">
-                          <div onClick={()=>{
-                            setExpertises([...expertises, "Legal Adviser"])
-                          }} className={expertises?.includes("Legal Adviser") ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]" : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"}>
+                          <div
+                            onClick={() => {
+                              setExpertises([...expertises, "Legal Adviser"]);
+                            }}
+                            className={
+                              expertises?.includes("Legal Adviser")
+                                ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]"
+                                : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"
+                            }
+                          >
                             Legal Adviser
                           </div>
-                          <div onClick={()=>{
-                            setExpertises([...expertises, "Real State Lawyer"])
-                          }} className={expertises?.includes("Real State Lawyer") ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]" : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"}>
+                          <div
+                            onClick={() => {
+                              setExpertises([
+                                ...expertises,
+                                "Real State Lawyer",
+                              ]);
+                            }}
+                            className={
+                              expertises?.includes("Real State Lawyer")
+                                ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]"
+                                : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"
+                            }
+                          >
                             Real State Lawyer
                           </div>
-                          <div onClick={()=>{
-                            setExpertises([...expertises, "Corporate Lawyer"])
-                          }} className={expertises?.includes("Corporate Lawyer") ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]" : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"}>
+                          <div
+                            onClick={() => {
+                              setExpertises([
+                                ...expertises,
+                                "Corporate Lawyer",
+                              ]);
+                            }}
+                            className={
+                              expertises?.includes("Corporate Lawyer")
+                                ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]"
+                                : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"
+                            }
+                          >
                             Corporate Lawyer
                           </div>
-                          <div onClick={()=>{
-                            setExpertises([...expertises, "Corporate Advisor"])
-                          }} className={expertises?.includes("Corporate Advisor") ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]" : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"}>
+                          <div
+                            onClick={() => {
+                              setExpertises([
+                                ...expertises,
+                                "Corporate Advisor",
+                              ]);
+                            }}
+                            className={
+                              expertises?.includes("Corporate Advisor")
+                                ? "text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#0F2C64]"
+                                : "text-[#585858] p-2 pl-5 pr-5 rounded bg-[#EEF4FF]  border border-[#585858] cursor-pointer"
+                            }
+                          >
                             Corporate Advisor
                           </div>
                         </div>
@@ -706,7 +775,6 @@ const Lawyers = () => {
                           Cancel
                         </button>
                         <button
-                      
                           onClick={handlecreatelawyer}
                           className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
                         >
@@ -723,7 +791,7 @@ const Lawyers = () => {
 
           <div>
             <div className="flex justify-between">
-              <div className="text-3xl font-semibold">Lawyers</div>
+              <div className="text-4xl font-semibold pl-6">All Lawyers</div>
               <div>
                 <div className="flex justify-center items-center gap-5">
                   <div className="relative mt-2 rounded-md">
@@ -773,61 +841,129 @@ const Lawyers = () => {
                   </tr>
                 </thead>
                 <tbody className="">
-                  {!!data?.length && data?.map((item) => (
-                    <tr
-                      className="shadow-lg bg-[white] h-[80px] border-b"
-                      key={item._id}
-                    >
-                      {/* <td className="text-center w-[80px]">
+                  {!!data?.length &&
+                    currentItems?.map((item) => (
+                      <tr
+                        className="shadow-lg bg-[white] h-[80px] border-b"
+                        key={item._id}
+                      >
+                        {/* <td className="text-center w-[80px]">
                         <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                           New
                         </span>
                       </td> */}
-                      <td className="text-left">
-                        <div className="flex items-center justify-left pl-5 gap-2">
-                          <img
-                            src={item.image}
-                            alt=""
-                            className="w-[50px] h-[50px] rounded-full"
-                          />
-                          {item.fullName}
-                        </div>
-                      </td>
-                      <td className="w-[200px] text-left">{item.email}</td>
+                        <td className="text-left">
+                          <div className="flex items-center justify-left pl-5 gap-2">
+                            <img
+                              src={item.image}
+                              alt=""
+                              className="w-[50px] h-[50px] rounded-full"
+                            />
+                            {item?.fullName ||
+                              item?.firstName + " " + item?.lastName}
+                          </div>
+                        </td>
+                        <td className="w-[200px] text-left">{item.email}</td>
 
-                      <td className="w-[150px] text-left">{item.phone}</td>
-                      <td className="w-[50px] text-center">
-                        {item.totalConsultancy}
-                      </td>
-                      <td className=" text-center ">
-                        <span className="bg-[#D8E3FF] text-[#094DB3] rounded-2xl p-2">
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className=" text-center ">
-                        <div className="flex">
-                          <div
-                            onClick={(e) => handledelete(item._id)}
-                            className="cursor-pointer"
+                        <td className="w-[150px] text-left">{item.phone}</td>
+                        <td className="w-[50px] text-center">
+                          {item.totalConsultancy}
+                        </td>
+                        <td className=" text-center ">
+                          <span
+                            className={
+                              item.status === "Done"
+                                ? "bg-[#D9FFD8] text-[#06FA00] px-6 text-[14px] rounded-2xl py-2"
+                                : "bg-[#D8E3FF] text-[#0055FA] px-6 text-[14px] rounded-2xl py-2"
+                            }
                           >
-                            <img src={dltbtn} alt="" />
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className=" text-center ">
+                          <div className="flex">
+                            <div
+                              onClick={()=> setDelete(item?._id)}
+                              className="cursor-pointer"
+                            >
+                              <img src={dltbtn} alt="" />
+                            </div>
+                          {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={(e)=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
+                            <div
+                              onClick={(e) => {
+                                setEditlawyers(true);
+                                setEditItemId(item._id);
+                                fetchSingleLawyer(item._id);
+                              }}
+                              className="cursor-pointer"
+                            >
+                              <img src={edit} alt="" />
+                            </div>
                           </div>
-                          <div
-                            onClick={(e) => {
-                              setEditlawyers(true);
-                              setEditItemId(item._id);
-                              fetchSingleLawyer(item._id)
-                            }}
-                            className="cursor-pointer"
-                          >
-                            <img src={edit} alt="" />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
+              <nav
+                className="flex items-center flex-column flex-wrap md:flex-row justify-between px-4"
+                aria-label="Table navigation"
+              >
+                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                  Showing
+                  <span className="font-semibold text-gray-900 dark:text-white px-1">
+                    {currentPage}
+                  </span>
+                  of
+                  <span className="font-semibold text-gray-900 dark:text-white pl-1">
+                    {Math.ceil(data?.length / itemsPerPage)}
+                  </span>
+                </span>
+
+                <div className="pagination">
+                  <button
+                    onClick={prevPage}
+                    disabled={currentPage === 1}
+                    className="pagination__selected"
+                  >
+                    <img src="./Vector (36).png" alt="" />
+                  </button>
+                  <button
+                    onClick={nextPage}
+                    // disabled={lastIndex >= transaction?.length}
+                    className="pagination__selected"
+                  >
+                    <img src="./Vector (37).png" alt="" />
+                  </button>
+                </div>
+              </nav>
             </div>
           </div>
         </>

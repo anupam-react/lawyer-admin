@@ -1,0 +1,18 @@
+.pagination {
+    padding: 14px 14px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pagination__selected {
+    background-color: 
+    #0F2C64;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+
+    cursor: pointer;
+    margin-left: 3px;
+}
