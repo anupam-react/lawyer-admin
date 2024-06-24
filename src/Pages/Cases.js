@@ -672,8 +672,10 @@ const Cases = () => {
                                       New
                                     </span>
                                   </td>
-                                  <td onClick={()=>{setCaseDetails(true), 
-                                  fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
+                                  <td onClick={()=>{
+                                    setCaseDetails(true)
+                                  fetchSingleCase(item._id)
+                                  }} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
                                   <td className="w-[200px] text-[#0F2C64] text-center bg-[#F6F9FF]">
@@ -782,7 +784,7 @@ const Cases = () => {
                                       New
                                     </span>
                                   </td>
-                                  <td onClick={()=>{setCaseDetails(true), 
+                                  <td onClick={()=>{setCaseDetails(true)
                                   fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
@@ -889,7 +891,7 @@ const Cases = () => {
                                       New
                                     </span>
                                   </td>
-                                  <td onClick={()=>{setCaseDetails(true), 
+                                  <td onClick={()=>{setCaseDetails(true) 
                                   fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
@@ -989,7 +991,7 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr onClick={()=>{setCaseDetails(true), 
+                                <tr onClick={()=>{setCaseDetails(true) 
                                   fetchSingleCase(item._id)}} className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
@@ -1051,7 +1053,7 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr onClick={()=>{setCaseDetails(true), 
+                                <tr onClick={()=>{setCaseDetails(true)
                                   fetchSingleCase(item._id)}} className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
