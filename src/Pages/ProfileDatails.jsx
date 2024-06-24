@@ -143,7 +143,7 @@ const ProfileDatails = () => {
             <br />
             <input
               value={confirmPass}
-              onChange={(e) => setConfirm(e.target.value)}
+              onChange={(e) => setConfirmPass(e.target.value)}
               placeholder="************"
               className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
