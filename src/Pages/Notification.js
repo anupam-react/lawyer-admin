@@ -15,9 +15,10 @@ const Notification = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
 
-  const [userType, setUserType] = useState("CUSTOMER");
+  const [userType, setUserType] = useState("ALL");
   const [selectedNotification, setSelectedNotification] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [isSelect , setSelect] = useState(true)
   const navigate = useNavigate();
   console.log(selectedItemId);
   ///////////fetch notification////////////
@@ -48,8 +49,8 @@ const Notification = () => {
     const data = {
       title: title,
       message: message,
-
       userType: userType,
+      isEnable: isSelect
     };
     axios
       .post(`${Baseurl}/api/v1/admin/notifications`, data, {
@@ -57,7 +58,7 @@ const Notification = () => {
       })
       .then((response) => {
         alert("data Created successfully");
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -149,7 +150,7 @@ const Notification = () => {
             </div>
           </div>
           <hr />
-          <form onSubmit={handleCreateNotification}>
+          <div >
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-black font-semibold">
@@ -169,17 +170,23 @@ const Notification = () => {
                 </span>
                 <button
                   onClick={() =>
-                    handleEnableDisableNotification(selectedItemId, true)
+                   { 
+                    // handleEnableDisableNotification(selectedItemId, true)
+                    setSelect(true)
                   }
-                  className="bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2"
+                  }
+                  className={isSelect ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2" : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center items-center gap-2 border border-[#0F2C64]"}
                 >
                   Enable
                 </button>
                 <button
                   onClick={() =>
-                    handleEnableDisableNotification(selectedItemId, false)
+                    { 
+                      // handleEnableDisableNotification(selectedItemId, false)
+                      setSelect(false)
+                    }
                   }
-                  className="bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2"
+                  className={!isSelect ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2" : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center border border-[#0F2C64] items-center gap-2"}
                 >
                   Disable
                 </button>
@@ -201,7 +208,7 @@ const Notification = () => {
                     Cancel
                   </button>
                   <button
-                    type="submit"
+                   onClick={handleCreateNotification}
                     className="bg-[#0F2C64]  p-2 pl-3 pr-3 rounded text-white flex justify-center items-center gap-2"
                   >
                     Save
@@ -216,7 +223,7 @@ const Notification = () => {
                 />
               </div>
             </div>
-          </form>
+          </div>
 
           <div className="mt-10 ml-1 mr-1">
             <table className="w-full border-collapse border border-slate-400 ... ">

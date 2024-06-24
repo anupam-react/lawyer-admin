@@ -10,12 +10,14 @@ import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import { useNavigate } from "react-router-dom";
 import { headers } from "../utlis/config";
-import { createApiData, fetchApiData } from "../utlis";
+import { createApiData, deleteApiData, fetchApiData, updateApiData } from "../utlis";
+import CaseDetails from "./CaseDetails";
 
 const Cases = () => {
   const [editcases, setEditcases] = useState(false);
   const [newcases, setnewcases] = useState(false);
-  const [deletepopup, setDeletepopup] = useState(false);
+  const [caseDetails , setCaseDetails] = useState(false)
+  const [caseData , setCaseData]= useState({})
   const [data, setData] = useState("");
   const [newCaseData , setNewCaseData] = useState([])
   const [oldCaseData , setOldCaseData] = useState([])
@@ -30,8 +32,10 @@ const Cases = () => {
   const [judge, setJudge] = useState("");
   const [lastDateOfHearing, setLastDateOfHearing] = useState("");
   const [nextHearingDate, setNextHearingDate] = useState("");
-  const [type, setType] = useState("General");
+  const [type, setType] = useState("");
+  const [file, setFile] = useState("");
   const [editItemId, setEditItemId] = useState(null);
+  const [isDelete , setDelete] = useState(false)
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -84,6 +88,12 @@ const Cases = () => {
     setCloseCaseData(data?.data?.reverse());
   }
 
+  const fetchSingleCase = async(id) =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/get/${id}`)
+    console.log(data)
+    setCaseData(data?.data);
+  }
+
   useEffect(() => {
     fetchAllCase();
     fetchNewCases();
@@ -92,22 +102,16 @@ const Cases = () => {
   }, []);
 
   ////////////delete case//////////
-  function handleDelete(_id) {
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/admin/case/delete/${_id}`)
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          navigate("/cases");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      navigate("/cases");
+ async function handleDelete(_id) {
+
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/case/delete/${_id}`);
+      setDelete(false)
+
+    } catch (err) {
+      console.log(err);
     }
+
   }
 
   ////////create cases //////////////
@@ -148,7 +152,7 @@ const Cases = () => {
   };
 
   //////Edit Cases //////////
-  const handleEditCases = (e) => {
+  const handleEditCases = async(e) => {
     e.preventDefault();
     console.log(caseTitle);
     console.log(editItemId);
@@ -163,17 +167,17 @@ const Cases = () => {
       type: type,
     };
 
-    axios
-      .patch(`${Baseurl}/api/v1/admin/case/update/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiData(
+       `${Baseurl}/api/v1/admin/case/update/${editItemId}`,
+        formData
+      );
+      alert("Data Edited Successfully");
+      setEditcases(false);
+
+    } catch (error) {
+      console.error("Error editing data:", error);
+    }
   };
 
   return (
@@ -208,10 +212,10 @@ const Cases = () => {
             <hr />
 
             <div className="mt-5 flex justify-between items-center">
-              <div className="text-center flex items-center gap-1">
-                <img src={userimage} alt="" className="w-[82px]" />
+              <div className="text-center flex items-center gap-4">
+                <img src={caseData?.lawyer?.image } alt="" className="w-[80px] h-[80px] rounded-full" />
                 <div className="flex flex-col ">
-                  <span className="text-left text-xl">Mr. Shlok Admin</span>
+                  <span className="text-left text-xl">{caseData?.lawyer?.fullName || caseData?.lawyer?.firstName + " " + caseData?.lawyer?.lastName }</span>
                   <span className="text-[#8B8B8B] text-left text-[10px]">
                     Verified Account
                   </span>
@@ -231,6 +235,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Consultant"
+                    value={caseData?.userId?.fullName || caseData?.userId?.firstName + " " + caseData?.userId?.lastName }
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -238,7 +243,7 @@ const Cases = () => {
                   <label>Case Title</label>
                   <br />
                   <input
-                    value={caseTitle}
+                    value={caseTitle || caseData?.caseTitle}
                     onChange={(e) => setCaseTitle(e.target.value)}
                     placeholder="Case Title"
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -248,7 +253,7 @@ const Cases = () => {
                   <label>Case Category</label>
                   <br />
                   <input
-                    value={caseNumber}
+                    value={type || caseData?.type}
                     onChange={(e) => setCaseNumber(e.target.value)}
                     placeholder="Case Category"
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -259,7 +264,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Court Name"
-                    value={courtName}
+                    value={courtName ||  caseData?.courtName}
                     onChange={(e) => setCourtName(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -271,7 +276,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Court Number"
-                    value={courtNumber}
+                    value={courtNumber ||  caseData?.courtNumber}
                     onChange={(e) => setCourtNumber(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -281,7 +286,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Case Number"
-                    value={caseNumber}
+                    value={caseNumber ||  caseData?.caseNumber}
                     onChange={(e) => setCaseNumber(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -301,7 +306,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Name of the Judge"
-                    value={judge}
+                    value={judge ||  caseData?.judge}
                     onChange={(e) => setJudge(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -313,7 +318,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Last date of hearing"
-                    value={lastDateOfHearing}
+                    value={lastDateOfHearing ||  caseData?.lastDateOfHearing}
                     onChange={(e) => setLastDateOfHearing(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -323,7 +328,7 @@ const Cases = () => {
                   <br />
                   <input
                     placeholder="Next date of hearing"
-                    value={nextHearingDate}
+                    value={nextHearingDate ||  caseData?.nextHearingDate}
                     onChange={(e) => setNextHearingDate(e.target.value)}
                     className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -365,7 +370,11 @@ const Cases = () => {
             </form>
           </div>
         </>
-      ) : (
+      ) :
+      caseDetails ? (
+        <CaseDetails caseData={caseData} setEditItemId={setEditItemId} setEditcases={setEditcases} setCaseDetails={setCaseDetails}/>
+      ):
+      (
         <>
           <>
             {newcases ? (
@@ -431,6 +440,8 @@ const Cases = () => {
                         <br />
                         <input
                           placeholder="Case Category"
+                          value={type}
+                          onChange={(e) => setType(e.target.value)}
                           className="placeholder: block w-[300px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -494,9 +505,10 @@ const Cases = () => {
                           className="placeholder: block w-[300px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>
+                     
                     </div>
 
-                    <div className="ml-10">
+                    <div className="ml-10 mt-6">
                       <label>Case Documents</label>
 
                       <div className="bg-[#E6EEFD] h-[150px] w-[600px] rounded-xl">
@@ -654,13 +666,14 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {!!data?.length && currentItems?.map((item) => (
-                                <tr className="border border-slate-300" key={item._id}>
+                                <tr  className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                                       New
                                     </span>
                                   </td>
-                                  <td className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
+                                  <td onClick={()=>{setCaseDetails(true), 
+                                  fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
                                   <td className="w-[200px] text-[#0F2C64] text-center bg-[#F6F9FF]">
@@ -687,41 +700,46 @@ const Cases = () => {
                                       <img
                                         src={deletebtn}
                                         alt=""
-                                        onClick={() => handleDelete(item._id)}
+                                        onClick={() => setDelete(item._id)}
                                         className="cursor-pointer"
                                       />
 
-                                      {deletepopup ? (
-                                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                                          <div className="w-[380px] h-[150px] bg-white  rounded-lg relative  gap-5 p-3">
-                                            <div className="text-center font-semibold">
-                                              Confirm Delete Cases ?
-                                            </div>
-                                            <hr />
+{isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
 
-                                            <div className="flex justify-center mt-5">
-                                              <button className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
-                                                Yes
-                                              </button>
-                                              <button
-                                                onClick={() =>
-                                                  setDeletepopup(false)
-                                                }
-                                                className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
-                                              >
-                                                Not Now
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ) : null}
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={()=>handleDelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+}
                                       <img
                                         className="cursor-pointer"
                                         src={editbtn}
                                         alt=""
                                         onClick={() => {
+                                          fetchSingleCase(item._id)
                                           setEditcases(true);
                                           setEditItemId(item._id);
+
                                         }}
                                       />
                                     </span>
@@ -758,13 +776,14 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr className="border border-slate-300" key={item._id}>
+                                <tr  className="border cursor-pointer border-slate-300" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                                       New
                                     </span>
                                   </td>
-                                  <td className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
+                                  <td onClick={()=>{setCaseDetails(true), 
+                                  fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
                                   <td className="w-[200px]  text-[#0F2C64] text-center bg-[#F6F9FF]">
@@ -791,39 +810,44 @@ const Cases = () => {
                                       <img
                                         src={deletebtn}
                                         alt=""
-                                        onClick={() => handleDelete(item._id)}
+                                        onClick={() => setDelete(item._id)}
                                         className="cursor-pointer"
                                       />
 
-                                      {deletepopup ? (
-                                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                                          <div className="w-[380px] h-[150px] bg-white  rounded-lg relative  gap-5 p-3">
-                                            <div className="text-center font-semibold">
-                                              Confirm Delete Cases ?
-                                            </div>
-                                            <hr />
+                      {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
 
-                                            <div className="flex justify-center mt-5">
-                                              <button className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
-                                                Yes
-                                              </button>
-                                              <button
-                                                onClick={() =>
-                                                  setDeletepopup(false)
-                                                }
-                                                className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
-                                              >
-                                                Not Now
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ) : null}
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={()=>handleDelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
                                       <img
                                         className="cursor-pointer"
                                         src={editbtn}
                                         alt=""
                                         onClick={() => {
+                                          fetchSingleCase(item._id)
                                           setEditcases(true);
                                           setEditItemId(item._id);
                                         }}
@@ -859,13 +883,14 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr className="border border-slate-300" key={item._id}>
+                                <tr  className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                                       New
                                     </span>
                                   </td>
-                                  <td className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
+                                  <td onClick={()=>{setCaseDetails(true), 
+                                  fetchSingleCase(item._id)}} className="text-center text-[#0F2C64] p-5 border border-slate-300 ...  bg-[#F6F9FF]">
                                     {item.caseTitle}
                                   </td>
                                   <td className="w-[200px] text-[#0F2C64] text-center bg-[#F6F9FF]">
@@ -892,39 +917,42 @@ const Cases = () => {
                                       <img
                                         src={deletebtn}
                                         alt=""
-                                        onClick={() => handleDelete(item._id)}
+                                        onClick={() => setDelete(item._id)}
                                         className="cursor-pointer"
                                       />
+{isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
 
-                                      {deletepopup ? (
-                                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                                          <div className="w-[380px] h-[150px] bg-white  rounded-lg relative  gap-5 p-3">
-                                            <div className="text-center font-semibold">
-                                              Confirm Delete Cases ?
-                                            </div>
-                                            <hr />
-
-                                            <div className="flex justify-center mt-5">
-                                              <button className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
-                                                Yes
-                                              </button>
-                                              <button
-                                                onClick={() =>
-                                                  setDeletepopup(false)
-                                                }
-                                                className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
-                                              >
-                                                Not Now
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ) : null}
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={()=>handleDelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+}
                                       <img
                                         className="cursor-pointer"
                                         src={editbtn}
                                         alt=""
                                         onClick={() => {
+                                          fetchSingleCase(item._id)
                                           setEditcases(true);
                                           setEditItemId(item._id);
                                         }}
@@ -961,7 +989,8 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr className="border border-slate-300" key={item._id}>
+                                <tr onClick={()=>{setCaseDetails(true), 
+                                  fetchSingleCase(item._id)}} className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                                       New
@@ -1022,7 +1051,8 @@ const Cases = () => {
                             </thead>
                             <tbody>
                               {currentItems?.map((item) => (
-                                <tr className="border border-slate-300" key={item._id}>
+                                <tr onClick={()=>{setCaseDetails(true), 
+                                  fetchSingleCase(item._id)}} className="border border-slate-300 cursor-pointer" key={item._id}>
                                   <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                                     <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                                       New

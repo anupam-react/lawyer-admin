@@ -13,10 +13,12 @@ import { Baseurl } from "../utlis/apiservices";
 import { headers } from "../utlis/config";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
+import { createApiData, deleteApiData, fetchApiData, updateApiData, updateApiPatch } from "../utlis";
 const Department = () => {
   const [loading, setLoading] = useState(true);
   const [addnewdeparment, setaddnewdepartment] = useState(false);
   const [editdepartment, setEditdepartment] = useState(false);
+  const [deptDetails, setDeptDetails] = useState()
   const [data, setData] = useState("");
   const [selectedDepartments, setSelectedDepartments] = useState([]);
   const [name, setName] = useState("");
@@ -25,23 +27,22 @@ const Department = () => {
   const [info, setInfo] = useState("");
   const [image, setImage] = useState("");
   const [editItemId, setEditItemId] = useState(null);
+  const [isDelete , setDelete] = useState(false)
   // console.log(editItemId);
 
   const navigate = useNavigate();
   ///////////fetch department////////////
-  function fetchdepartment() {
-    axios
-      .get(`${Baseurl}/api/v1/category`, {
-        headers: headers,
-      })
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+  async function fetchdepartment() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/category`);
+    setData(data?.data);
   }
+
+  const fetchSingleDepertment = async(id) =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/category/${id}`)
+    console.log(data)
+    setDeptDetails(data?.data);
+  }
+
   useEffect(() => {
     fetchdepartment();
     setTimeout(() => {
@@ -50,7 +51,7 @@ const Department = () => {
   }, []);
 
   ////////////create department//////////
-  const handlecreatedepartment = (e) => {
+  const handlecreatedepartment = async(e) => {
     e.preventDefault();
     console.log({ name, type, category, info });
 
@@ -61,38 +62,33 @@ const Department = () => {
     formData.append("info", info);
     formData.append("image", image);
 
-    axios
-      .post(`${Baseurl}/api/v1/createCategory`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("data added successfully");
-        window.location.reload();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    try {
+      await createApiData(
+       `${Baseurl}/api/v1/createCategory`,
+        formData
+      );
+      alert("Data added successfully");
+      setaddnewdepartment(false);
+      fetchdepartment()
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
+   
   };
 
   /////////////////Delete Department///////////
 
-  function handledelete(_id) {
-    // console.log(_id);
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/category/${_id}`, { headers: headers })
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          navigate("/department");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      navigate("/department");
+  async function handledelete(_id) {
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/category/${_id}`);
+      setDelete(false)
+      fetchdepartment()
+
+    } catch (err) {
+      console.log(err);
     }
+
   }
   // Function to handle checkbox toggle
   const handleCheckboxChange = (itemId) => {
@@ -107,7 +103,7 @@ const Department = () => {
   };
 
   ///////update Department///////
-  const handleeditdepartment = (e) => {
+  const handleeditdepartment = async(e) => {
     e.preventDefault();
     console.log(editItemId);
     // console.log(editItemId, name, type, info, category, image);
@@ -118,17 +114,19 @@ const Department = () => {
     formData.append("info", info);
     formData.append("image", image);
 
-    axios
-      .patch(`${Baseurl}/api/v1/category/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiPatch(
+        `${Baseurl}/api/v1/category/${editItemId}`,
+        formData
+      );
+      alert("Data Edited Successfully");
+      setEditdepartment(false);
+      fetchdepartment()
+    } catch (error) {
+      console.error("Error editing data:", error);
+    }
+
+   
   };
 
   const handleClosePopup = () => {
@@ -156,7 +154,7 @@ const Department = () => {
                         Create Department
                         <br />
                         <span className="text-[15px] text-[#525252]">
-                          Customize and change/add Services
+                          Customize and change/add Department
                         </span>
                       </h3>
 
@@ -170,41 +168,41 @@ const Department = () => {
                     <form onSubmit={handlecreatedepartment}>
                       <div className=" justify-center flex">
                         <div>
-                          <label>Service Name</label>
+                          <label>Department Name</label>
                           <br />
                           <input
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Service Name"
+                            placeholder=""
                             className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
                       <div className=" justify-center flex gap-9 mt-4">
                         <div>
-                          <label>Service Type</label>
+                          <label>Department Type</label>
                           <br />
                           <input
                             value={type}
                             onChange={(e) => setType(e.target.value)}
-                            placeholder="Service Type"
+                            placeholder=""
                             className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                         <div>
-                          <label>Service Category</label>
+                          <label>Department Category</label>
                           <br />
                           <input
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            placeholder="Service Category"
+                            placeholder=""
                             className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
 
                       <div className="mt-4 flex flex-col items-center text-left justify-center">
-                        <div className="">Upload Service image</div>
+                        <div className="">Upload Department image</div>
                         <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                           <div className="p-5 relative rounded-lg h-[200px]">
                             <div className="flex flex-col justify-center text-center mt-3">
@@ -225,7 +223,7 @@ const Department = () => {
                               </label>
 
                               <div className="title text-[#0B50B3]">
-                                upload Image From Device /Browser
+                             { image?.name ||  "upload Image From Device /Browser"}
                               </div>
                             </div>
                           </div>
@@ -233,24 +231,24 @@ const Department = () => {
                       </div>
                       <div className=" justify-center flex mt-4">
                         <div>
-                          <label>Additional Service Information</label>
+                          <label>Additional Department Information</label>
                           <br />
                           <textarea
                             value={info}
                             onChange={(e) => setInfo(e.target.value)}
-                            placeholder="Additional Service Information"
+                            placeholder=""
                             className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
 
                       <div className="flex justify-end gap-5 m-5">
-                        <button
-                          className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]"
+                        <div
+                          className="text-[#0F2C64] p-2 pl-5 pr-5 rounded cursor-pointer bg-white border border-[#0F2C64]"
                           onClick={() => setaddnewdepartment(false)}
                         >
                           Cancel
-                        </button>
+                        </div>
                         <button className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2">
                           Save Changes
                         </button>
@@ -286,41 +284,41 @@ const Department = () => {
                     <form onSubmit={handleeditdepartment}>
                       <div className=" justify-center flex">
                         <div>
-                          <label>Service Name</label>
+                          <label>Department Name</label>
                           <br />
                           <input
-                            value={name}
+                            value={name || deptDetails?.name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Service Name"
+                            placeholder=""
                             className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
                       <div className=" justify-center flex gap-9 mt-4">
                         <div>
-                          <label>Service Type</label>
+                          <label>Department Type </label>
                           <br />
                           <input
-                            value={type}
+                            value={type  || deptDetails?.type}
                             onChange={(e) => setType(e.target.value)}
-                            placeholder="Service Type"
+                            placeholder=" "
                             className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                         <div>
-                          <label>Service Category</label>
+                          <label>Department Category</label>
                           <br />
                           <input
-                            value={category}
+                            value={category  || deptDetails?.category}
                             onChange={(e) => setCategory(e.target.value)}
-                            placeholder="Service Category"
+                            placeholder=""
                             className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
 
                       <div className="mt-4 flex flex-col items-center text-left justify-center">
-                        <div className="">Upload Service image</div>
+                        <div className="">Upload Department image</div>
                         <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                           <div className="p-5 relative rounded-lg h-[200px]">
                             <div className="flex flex-col justify-center text-center mt-3">
@@ -341,7 +339,7 @@ const Department = () => {
                               </label>
 
                               <div className="title text-[#0B50B3]">
-                                upload Image From Device /Browser
+                             {image?.name ||   "upload Image From Device /Browser"}
                               </div>
                             </div>
                           </div>
@@ -349,24 +347,24 @@ const Department = () => {
                       </div>
                       <div className=" justify-center flex mt-4">
                         <div>
-                          <label>Additional Service Information</label>
+                          <label>Additional department Information</label>
                           <br />
                           <textarea
-                            value={info}
+                            value={info || deptDetails?.info}
                             onChange={(e) => setInfo(e.target.value)}
-                            placeholder="Additional Service Information"
+                            placeholder=""
                             className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
                       </div>
 
                       <div className="flex justify-end gap-5 m-5">
-                        <button
-                          className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]"
+                        <div
+                          className="text-[#0F2C64] p-2 pl-5 pr-5 rounded cursor-pointer bg-white border border-[#0F2C64]"
                           onClick={() => setEditdepartment(false)}
                         >
                           Cancel
-                        </button>
+                        </div>
                         <button
                           type="submit"
                           className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -415,8 +413,36 @@ const Department = () => {
                       className="cursor-pointer"
                       src={deletebtn}
                       alt=""
-                      onClick={() => handledelete(selectedDepartments)}
+                      onClick={() => setDelete(selectedDepartments)}
                     />
+                    {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={(e)=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
                   </div>
                   <div>
                     <img
@@ -424,6 +450,7 @@ const Department = () => {
                       src={edit}
                       alt=""
                       onClick={(itemId) => {
+                        fetchSingleDepertment(editItemId)
                         setEditdepartment(true);
                         // setEditItemId(itemId);
                       }}
@@ -439,7 +466,7 @@ const Department = () => {
               <label className="text-[#6D6D6D]">Select All</label>
             </div> */}
             <div className="flex flex-wrap gap-10 mt-10 ml-10">
-              {data?.data?.map((item) => (
+              {data?.map((item) => (
                 <div className="cursor-pointer" key={item._id}>
                   <div className="box-shadow rounded-lg w-[180px] h-[180px] relative flex flex-col justify-center items-center">
                     <input

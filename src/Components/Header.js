@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoCloseSharp } from "react-icons/io5";
@@ -15,10 +15,23 @@ import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import helpandsupport from "../Assets/helpandsupport.svg";
+import { fetchApiData } from "../utlis";
+import { Baseurl } from "../utlis/apiservices";
 
 const Header = () => {
+  const [userDetails, setUserDetails] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setfilter] = useState(false);
+
+  const fetchUser = async (id) => {
+    const data = await fetchApiData(`${Baseurl}/api/v1/customer/getProfile`);
+    console.log(data);
+    setUserDetails(data?.data);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -176,12 +189,13 @@ const Header = () => {
       ) : null}
       <div className="bg-[white]  h-[100px]  mt-5 flex flex-col shadow-lg ">
         <div className="flex justify-between items-center mt-7 mr-5">
-          <div className="ml-10 flex justify-center items-center gap-2 ">
-            <img src={userprofile} alt="" />
+          <div className="ml-10 flex justify-center items-center gap-2 cursor-pointer" onClick={()=> navigate('/profile')}>
+            <img src={userDetails?.image} alt="" className="w-[50px] h-[50px] rounded-full"/>
             <span className="font-bold">
-              Mr Admin
+            {userDetails?.fullName ||
+                      userDetails?.firstName + " " + userDetails?.lastName}
               <br />
-              <span className="text-[#808080]">lorem lorem</span>
+              <span className="text-[#808080]">{userDetails?.email}</span>
             </span>
           </div>
 

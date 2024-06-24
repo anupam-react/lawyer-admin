@@ -23,6 +23,8 @@ import Register from "./Register/Register";
 import Forgot from "./Forgot/Forgot";
 import Email from "./Forgot/Email";
 import Otp from "./Forgot/Otp";
+import ProfileDatails from "./Pages/ProfileDatails";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,11 +53,13 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard", element: <PrivateRoute element={<Dashboard />} /> },
       { path: "/Lawyers", element: <PrivateRoute element={<Lawyers />} /> },
+      { path: "/profile", element: <PrivateRoute element={<ProfileDatails />} /> },
       {
         path: "/totalusers",
         element: <PrivateRoute element={<Totalusers />} />,
       },
       { path: "/cases", element: <PrivateRoute element={<Cases />} /> },
+    
       {
         path: "/department",
         element: <PrivateRoute element={<Department />} />,

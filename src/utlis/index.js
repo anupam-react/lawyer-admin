@@ -47,6 +47,22 @@ export const updateApiData = async (url, data) => {
     return error;
   }
 };
+export const updateApiPatch = async (url, data) => {
+  let token = JSON.parse(localStorage.getItem("accessToken"));
+
+  const headers = {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+  try {
+    const response = await axios.patch(url, data, headers);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export const deleteApiData = async (url) => {
   let token = JSON.parse(localStorage.getItem("accessToken"));
