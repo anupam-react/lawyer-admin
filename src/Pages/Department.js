@@ -38,7 +38,7 @@ const Department = () => {
   }
 
   const fetchSingleDepertment = async(id) =>{
-    const data = await fetchApiData(`${Baseurl}/api/v1/admin/category/${id}`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/category/${id}`)
     console.log(data)
     setDeptDetails(data?.data);
   }
@@ -466,7 +466,7 @@ const Department = () => {
               <label className="text-[#6D6D6D]">Select All</label>
             </div> */}
             <div className="flex flex-wrap gap-10 mt-10 ml-10">
-              {data?.map((item) => (
+              {!!data?.length && data?.map((item) => (
                 <div className="cursor-pointer" key={item._id}>
                   <div className="box-shadow rounded-lg w-[180px] h-[180px] relative flex flex-col justify-center items-center">
                     <input

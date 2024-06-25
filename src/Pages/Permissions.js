@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import { headers } from "../utlis/config";
+import { createApiData, fetchApiData, updateApiPatch } from "../utlis";
 const Permissions = () => {
   const [createpermission, setceatepermission] = useState(false);
   const [editpermission, seteditpermission] = useState(false);
@@ -20,28 +21,22 @@ const Permissions = () => {
   const [editItemId, setEditItemId] = useState(null);
 
   /////fetch Permissions//////////
-  function fetchPermissions() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/getStaff`)
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+  async function fetchPermissions() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/getStaff`);
+    setData(data?.data?.reverse());
+    
   }
   useEffect(() => {
     fetchPermissions();
   }, []);
 
   ////////////Create Permission//////////
-  const handleCreatePermission = (e) => {
+  const handleCreatePermission = async(e) => {
     e.preventDefault();
     console.log(fullName, phone, email, status, permission);
     const permissionString = JSON.stringify(permission);
 
-    const data = {
+    const formData = {
       fullName: fullName,
       phone: phone,
       email: email,
@@ -49,17 +44,18 @@ const Permissions = () => {
       status: status,
     };
 
-    axios
-      .post(`${Baseurl}/api/v1/admin/CreateStaff`, data, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data added successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error creating staff:", error);
-      });
+    try {
+      await createApiData(
+       `${Baseurl}/api/v1/admin/CreateStaff`,
+        formData
+      );
+      alert("Data added successfully");
+      setceatepermission(false);
+      fetchPermissions()
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
   };
 
   const handleCheckboxChange = (e) => {
@@ -76,12 +72,12 @@ const Permissions = () => {
   };
 
   //////////edit Lawyer/////////
-  const handleEditPermission = (e) => {
+  const handleEditPermission = async(e) => {
     e.preventDefault();
 
     const permissionString = JSON.stringify(permission);
-    console.log(editItemId);
-    const Data = {
+    console.log(permissionString);
+    const formData = {
       email: email,
       phone: phone,
       fullName: fullName,
@@ -89,15 +85,18 @@ const Permissions = () => {
       status: status,
     };
 
-    axios
-      .patch(`${Baseurl}/api/v1/admin/updateStaff/${editItemId}`, Data)
-      .then((res) => {
-        alert("Data Edited Successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiPatch(
+      `${Baseurl}/api/v1/admin/updateStaff/${editItemId}`,
+        formData
+      );
+      alert("Data Edited Successfully");
+      seteditpermission(false);
+      fetchPermissions()
+    } catch (error) {
+      console.error("Error editing data:", error);
+    }
+
   };
 
   return (
@@ -228,7 +227,8 @@ const Permissions = () => {
                       className="placeholder: block w-[350px] h-[40px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     >
                       <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
+                      <option value="Block">Block</option>
+                      <option value="Pending">Pending</option>
                     </select>
                   </div>
                 </div>
@@ -375,8 +375,9 @@ const Permissions = () => {
                         onChange={(e) => setStatus(e.target.value)}
                         className="placeholder: block w-[350px] h-[40px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                      <option value="Active">Active</option>
+                      <option value="Block">Block</option>
+                      <option value="Pending">Pending</option>
                       </select>
                     </div>
                   </div>
@@ -444,28 +445,28 @@ const Permissions = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.data?.map((item) => (
+                    {!!data?.length && data?.map((item) => (
                       <tr
                         className="border-t-2 border-b-2 h-[60px]"
                         key={item._id}
                       >
-                        <td className="text-center flex items-center h-[60px]">
+                        <td className="text-center flex gap-3 items-center h-[60px]">
                           <img
-                            src={item.image}
+                            src={item?.image}
                             alt=""
                             className="w-[50px] h-[50px] rounded-full"
                           />
                           <div>
-                            <div className="text-xl">{item.fullName}</div>
-                            <div className="text-[#0F2C64] text-[10px]">
+                            <div className="text-xl">{item?.fullName || item?.firstName + " " + item?.lastName}</div>
+                            <div className="text-[#0F2C64] text-left text-[12px]">
                               Real Estate
                             </div>
                           </div>
                         </td>
-                        <td className=" text-leftborder ">+91{item.phone}</td>
-                        <td className="text-leftborder  ">{item.email}</td>
+                        <td className=" text-leftborder ">+91{item?.phone}</td>
+                        <td className="text-leftborder  ">{item?.email}</td>
 
-                        <td className="text-[#26A843]">{item.status}</td>
+                        <td className={item.status === "Active" ? "text-[#26A843]" : "text-[#E50606]"}>{item.status}</td>
                         <td>{item.permission}</td>
                         <td
                           className="cursor-pointer"

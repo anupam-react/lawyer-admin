@@ -67,30 +67,30 @@ const Cases = () => {
 
   const fetchAllCase = async() =>{
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/all`)
-    console.log(data)
+
     setData(data?.data?.reverse());
   }
   const fetchNewCases = async() =>{
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/NewCase/all`)
-    console.log(data)
+
     setNewCaseData(data?.data?.reverse());
   }
 
   const fetchOldCases = async() =>{
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/OldCase/all`)
-    console.log(data)
+
     setOldCaseData(data?.data?.reverse());
   }
 
   const fetchCloseCases = async() =>{
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/getClosed`)
-    console.log(data)
+
     setCloseCaseData(data?.data?.reverse());
   }
 
   const fetchSingleCase = async(id) =>{
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/case/get/${id}`)
-    console.log(data)
+
     setCaseData(data?.data);
   }
 

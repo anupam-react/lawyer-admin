@@ -260,17 +260,17 @@ const Dashboard = () => {
                     {!!Transactions?.length && Transactions?.map((item) => (
                       <tr className="h-[40px] border-b">
                         <td>
-                          <div className="text-center flex items-center justify-center gap-1 h-[60px]">
+                          <div className="text-center flex items-center justify-start gap-4 h-[60px]">
                             <img
                               src={item.user?.image}
                               alt=""
                               className="w-[40px] h-[40px] rounded-full"
                             />
                             <div className="flex flex-col ">
-                              <span className="text-left font-bold text-[12px]">
-                                {item.user?.firstName}
+                              <span className="text-left font-bold text-[16px]">
+                                {item.user?.fullName || item.user?.firstName + " " + item.user?.lastName}
                               </span>
-                              <span className="text-[#0F2C64] text-[10px]">
+                              <span className="text-[#0F2C64] text-left text-[12px]">
                                 {item.user?.email}
                               </span>
                             </div>

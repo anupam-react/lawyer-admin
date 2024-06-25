@@ -84,6 +84,43 @@ const Complaint = () => {
                 <input type="checkbox" className="w-[18px] h-[18px]" />
               </td>
             </tr>
+          
+            <tr className="shadow-lg bg-[white]">
+              <td className="text-left">
+                <div className="flex gap-2">
+                  <img src={userimage} alt="" />
+                  <div className="">
+                    <div>
+                      John Doe{" "}
+                      <span className="text-[#808080]">
+                        12:33 pm. 13 Nov, 2023
+                      </span>
+                    </div>
+                    <div className=" mt-1">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Maecenas vulputate turpis elit, quis pellentesque ante
+                      bibendum nec.
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td className="text-left">Lorem ipsum dolor sit.</td>
+
+              <td className="text-left flex items-center">
+                <div>4.5</div>
+
+                <div className="flex">
+                  <FaStar style={{ color: "#FFB800" }} />
+                  <FaStar style={{ color: "#FFB800" }} />
+                  <FaStar style={{ color: "#FFB800" }} />
+                  <FaStar style={{ color: "#FFB800" }} />
+                  <FaStar style={{ color: "#FFB800" }} />
+                </div>
+              </td>
+              <td className="text-center">
+                <input type="checkbox" className="w-[18px] h-[18px]" />
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

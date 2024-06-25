@@ -24,6 +24,7 @@ import Forgot from "./Forgot/Forgot";
 import Email from "./Forgot/Email";
 import Otp from "./Forgot/Otp";
 import ProfileDatails from "./Pages/ProfileDatails";
+import Privacy from "./Pages/Privacy";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,7 @@ const router = createBrowserRouter([
       },
       { path: "/Messages", element: <PrivateRoute element={<Messages />} /> },
       { path: "/Complaint", element: <PrivateRoute element={<Complaint />} /> },
+      { path: "/privacy", element: <PrivateRoute element={<Privacy />} /> },
       { path: "/History", element: <PrivateRoute element={<History />} /> },
     ],
   },

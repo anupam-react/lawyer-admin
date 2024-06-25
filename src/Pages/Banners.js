@@ -9,29 +9,35 @@ import { Baseurl } from "../utlis/apiservices";
 import { headers } from "../utlis/config";
 import { Navigate } from "react-router-dom";
 import Spinner from "../utlis/Spinner";
+import { createApiData, deleteApiData, fetchApiData, updateApiData } from "../utlis";
 const Banners = () => {
   const [loading, setLoading] = useState(true);
   const [addbanner, setaddbanner] = useState(false);
   const [editBanner, setEditbanner] = useState(false);
 
   const [data, setData] = useState("");
+  const [bannerInfo, setBannerInfo] = useState("");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
+  const [desc, setDesc] = useState("");
+  const [date, setDate] = useState("");
+  const [link, setLink] = useState("");
+  const [isDelete , setDelete] = useState(false)
 
   const [editItemId, setEditItemId] = useState(null);
 
   /////////fetch banner ///////////
-  function fetchbanner() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/AllBanner`)
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+  async function fetchbanner() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/AllBanner`);
+    setData(data?.data?.reverse());
   }
+
+  const fetchSingleBanner = async(id) =>{
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/banner/${id}`)
+
+    setBannerInfo(data?.data);
+  }
+
   useEffect(() => {
     fetchbanner();
     setTimeout(() => {
@@ -40,68 +46,73 @@ const Banners = () => {
   }, []);
 
   ////////create Banner ////////////
-  const handlecreateBanner = (e) => {
+  const handlecreateBanner = async (e) => {
     e.preventDefault();
 
     console.log({ title, image });
 
     const formData = new FormData();
-    formData.append("desc", title);
+    formData.append("desc", desc);
     formData.append("image", image);
+    formData.append("link", link);
+    formData.append("title", title);
+    formData.append("date", date);
 
-    axios
-      .post(`${Baseurl}/api/v1/admin/CreateBanner`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("data added successfully");
-        window.location.reload();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    try {
+      await createApiData(
+        `${Baseurl}/api/v1/admin/CreateBanner`,
+        formData
+      );
+      alert("Data added successfully");
+      setaddbanner(false);
+      fetchbanner();
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
+
+
   };
 
   /////////////////Delete Banner///////////
 
-  function handledelete(_id) {
-    console.log(_id);
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/admin/delete/${_id}`)
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          Navigate("/Banners");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      Navigate("/Banners");
+  async function handledelete(_id) {
+
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/delete/${_id}`);
+      setDelete(false)
+      fetchbanner()
+
+    } catch (err) {
+      console.log(err);
     }
+    
   }
 
   //////////edit banner/////////
-  const handleeditbanner = (e) => {
+  const handleeditbanner = async(e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("desc", title);
+    formData.append("desc", desc);
     formData.append("image", image);
+    formData.append("link", link);
+    formData.append("title", title);
+    formData.append("date", date);
 
-    axios
-      .put(`${Baseurl}/api/v1/admin/updateBanner/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiData(
+        `${Baseurl}/api/v1/admin/updateBanner/${editItemId}`,
+        formData
+      );
+      alert("Data Edited Successfully");
+      setEditbanner(false);
+      fetchbanner();
+    } catch (error) {
+      console.error("Error editing data:", error);
+    }
+
+  
   };
 
   return (
@@ -144,7 +155,7 @@ const Banners = () => {
                     <label>Banner Title</label>
                     <br />
                     <input
-                      value={title}
+                      value={title || bannerInfo?.title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Banner Title"
                       className="placeholder: block w-[450px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -155,6 +166,8 @@ const Banners = () => {
                     <br />
                     <input
                       type="date"
+                      value={date || bannerInfo?.date}
+                      onChange={(e) => setDate(e.target.value)}
                       className="placeholder: block w-[150px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
@@ -163,6 +176,8 @@ const Banners = () => {
                     <br />
                     <input
                       placeholder="Url Link"
+                      value={link || bannerInfo?.link}
+                      onChange={(e) => setLink(e.target.value)}
                       className="placeholder: block w-[300px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
@@ -173,6 +188,8 @@ const Banners = () => {
                     <br />
                     <input
                       placeholder="Banner Content"
+                      value={desc || bannerInfo?.desc}
+                      onChange={(e) => setDesc(e.target.value)}
                       className="placeholder: block w-[82%] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
@@ -197,26 +214,26 @@ const Banners = () => {
                         </label>
 
                         <div className="title text-[#0B50B3]">
-                          upload Image From Device /Browser
+                     {image?.name || "upload Image From Device /Browser"}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="ml-10">
+                {/* <div className="ml-10">
                   <label>Status</label>
                   <br />
                   <select className="w-[450px] h-[35px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option>Enable</option>
                     <option>Disable</option>
                   </select>
-                </div>
+                </div> */}
 
                 <div className="flex justify-end gap-5 mr-5">
-                  <button className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]">
+                  <div onClick={()=> setEditbanner(false)} className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64] cursor-pointer">
                     Cancel
-                  </button>
+                  </div>
                   <button
                     type="submit"
                     className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -274,6 +291,8 @@ const Banners = () => {
                           <br />
                           <input
                             type="date"
+                            value={date}
+                      onChange={(e) => setDate(e.target.value)}
                             className="placeholder: block w-[150px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
@@ -282,6 +301,8 @@ const Banners = () => {
                           <br />
                           <input
                             placeholder="Url Link"
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
                             className="placeholder: block w-[300px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
@@ -292,6 +313,8 @@ const Banners = () => {
                           <br />
                           <input
                             placeholder="Banner Content"
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
                             className="placeholder: block w-[82%] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
@@ -320,7 +343,7 @@ const Banners = () => {
                               </label>
 
                               <div className="title text-[#0B50B3]">
-                                upload Image From Device /Browser
+                              {image?.name || "upload Image From Device /Browser"}
                               </div>
                             </div>
                           </div>
@@ -328,9 +351,9 @@ const Banners = () => {
                       </div>
 
                       <div className="flex justify-end gap-5 mr-5">
-                        <button className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]">
+                        <div onClick={()=> setaddbanner(false)} className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64] cursor-pointer">
                           Cancel
-                        </button>
+                        </div>
                         <button
                           type="submit"
                           className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -377,28 +400,27 @@ const Banners = () => {
                         </tr>
                       </thead>
                       <tbody className="mt-4">
-                        {data?.data?.map((item) => (
+                        {!!data?.length && data?.map((item) => (
                           <tr
                             className="border-t-2 border-b-2 m-5"
                             key={item._id}
                           >
                             <td className="flex justify-center items-center h-[70px]">
                               <img
-                                src={item.image}
+                                src={item?.image}
                                 alt=""
                                 type="file"
-                                className="w-10"
+                                className="w-16 h-10 border border-[#0F2C6426]"
                               />
                             </td>
                             <td className="w-[100px]  text-center p-2">
-                              {item.desc}
+                              {item?.title}
                             </td>
                             <td className="w-[150px] text-center p-2">
-                              Loreum Ipsum
+                            {item?.link}
                             </td>
                             <td className="w-[200px] text-left p-2">
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit. Proin ut suscipit eros
+                            {item?.desc}
                             </td>
                             <td className="w-[150px]">
                               <span className="flex ml-20 gap-5">
@@ -411,13 +433,42 @@ const Banners = () => {
                                   src={deletebtn}
                                   alt=""
                                   className="cursor-pointer"
-                                  onClick={(e) => handledelete(item._id)}
+                                  onClick={(e) => setDelete(item._id)}
                                 />
+                                {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={(e)=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
                                 <img
                                   src={editbtn}
                                   alt=""
                                   className="cursor-pointer"
                                   onClick={(e) => {
+                                    fetchSingleBanner(item._id)
                                     setEditbanner(true);
                                     setEditItemId(item._id);
                                   }}

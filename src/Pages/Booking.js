@@ -4,62 +4,42 @@ import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import config, { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
+import { fetchApiData } from "../utlis";
 
 const Booking = () => {
   const [selectedDiv, setSelectedDiv] = useState("Upcoming");
   const [upcomingdata, setUpcomingdata] = useState("");
+  const [pastData, setPastdata] = useState("");
   const [cancelleddata, setCancelleddata] = useState("");
 
   //////////fetch upcomingbooking//////////
-  function fetchupcomingbooking() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/upcomingAppointment`, {
-        headers: headers,
-      })
-      .then((response) => {
-        setUpcomingdata(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  async function fetchupcomingbooking() {
+
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/upcomingAppointment`)
+    console.log(data?.data)
+    setUpcomingdata(data?.data?.reverse());
+
+  }
+
+
+  //////////fetch pastbooking//////////
+  async function fetchpastbooking() {
+
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/pastAppointment`)
+    setPastdata(data?.data?.reverse());
+    
+  }
+ 
+
+  //////////fetch cancelledbooking//////////
+  async function fetchcancelledbooking() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/allCancelAppointment`)
+    setCancelleddata(data?.data?.reverse());
+  
   }
   useEffect(() => {
     fetchupcomingbooking();
-  }, []);
-
-  //////////fetch pastbooking//////////
-  function fetchpastbooking() {
-    axios
-      .get(`${Baseurl}`, {
-        headers: headers,
-      })
-      .then((response) => {
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  useEffect(() => {
     fetchpastbooking();
-  }, []);
-
-  //////////fetch cancelledbooking//////////
-  function fetchcancelledbooking() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/allCancelAppointment`, {
-        headers: headers,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setCancelleddata(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  useEffect(() => {
     fetchcancelledbooking();
   }, []);
   return (
@@ -79,13 +59,14 @@ const Booking = () => {
             Upcoming
           </div>
           <div
+            onClick={() => setSelectedDiv("Past")}
             className={`cursor-pointer ${
-              selectedDiv === "past"
+              selectedDiv === "Past"
                 ? "underline text-[#0F2C64] underline-offset-8"
                 : ""
             }`}
           >
-            past
+            Past
           </div>
           <div
             onClick={() => setSelectedDiv("Cancelled")}
@@ -130,25 +111,86 @@ const Booking = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {upcomingdata?.data?.map((item) => (
+                  {!!upcomingdata?.length && upcomingdata?.map((item) => (
                     <tr
                       className="border-t-2 border-b-2 m-5 h-[80px]"
                       key={item._Id}
                     >
                       <td className="text-left">
                         <div className="flex items-center gap-2">
-                          <img src={userimage} alt="" />
-                          john
+                          <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
-                        {item.userId?.fullName}
+                        {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
                       </td>
 
                       <td className="text-center">
                         {item.userId?.languageKnow}
                       </td>
-                      <td className="text-center">Time 12:00</td>
+                      <td className="text-center">Time {item?.appointmentTime}</td>
+                      <td className="w-[50px] text-center">
+                        {item.userId?.state}
+                      </td>
+                      <td className="w-[50px] text-center">Marriage Problem</td>
+                      <td className=" text-center ">
+                        <span className="bg-[#EDEDED] text-[#0F2C64] rounded-2xl w-[150px] pl-2 flex gap-1 ">
+                          <img src={timer} alt="" />
+                          10 min booked
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {selectedDiv === "Past" && (
+            <div className="mt-5">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="w-[150px] text-left text-[#0F2C64]">
+                      Consulted Name
+                    </th>
+                    <th className="text-center text-[#0F2C64] w-[150px]">
+                      Advocate Name
+                    </th>
+                    <th className="w-[150px] text-center text-[#0F2C64]">
+                      Languages
+                    </th>
+                    <th className=" w-[100px] text-center text-[#0F2C64]">
+                      Time
+                    </th>
+                    <th className=" w-[100px] text-center text-[#0F2C64]">
+                      Location
+                    </th>
+
+                    <th className="w-[150px] text-center text-[#0F2C64]">
+                      Cancelled Reason
+                    </th>
+                    <th className="w-[150px] text-center text-[#0F2C64]"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {!!pastData?.length && pastData?.map((item) => (
+                    <tr
+                      className="border-t-2 border-b-2 m-5 h-[80px]"
+                      key={item._Id}
+                    >
+                      <td className="text-left">
+                        <div className="flex items-center gap-2">
+                          <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
+                        </div>
+                      </td>
+                      <td className="w-[200px] text-center">
+                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
+                      </td>
+
+                      <td className="text-center"> {item.userId?.languageKnow}</td>
+                      <td className="text-center">Time  {item?.appointmentTime}</td>
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
@@ -193,23 +235,23 @@ const Booking = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cancelleddata?.data?.map((item) => (
+                  {!!cancelleddata?.length && cancelleddata?.map((item) => (
                     <tr
                       className="border-t-2 border-b-2 m-5 h-[80px]"
                       key={item._Id}
                     >
                       <td className="text-left">
                         <div className="flex items-center gap-2">
-                          <img src={userimage} alt="" />
-                          john
+                          <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full"  />
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
-                        {item.case.caseNumber}
+                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
                       </td>
 
-                      <td className="text-center">{item.case.caseTitle}</td>
-                      <td className="text-center">Time 12:00</td>
+                      <td className="text-center">{item.userId?.languageKnow}</td>
+                      <td className="text-center">Time {item?.appointmentTime}</td>
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>

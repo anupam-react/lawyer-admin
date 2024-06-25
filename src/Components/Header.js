@@ -229,10 +229,12 @@ const Header = () => {
                       </span>
 
                       <ul>
+                        <Link to="/privacy">
                         <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2">
                           <img src={privacy} alt="" />
                           Privacy Policy
                         </li>
+                        </Link>
                         <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-1">
                           <img src={term} alt="" />
                           Terms & Conditinos

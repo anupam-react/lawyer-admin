@@ -12,11 +12,13 @@ import config, { headers } from "../utlis/config";
 import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { createApiData, deleteApiData, fetchApiData } from "../utlis";
 const Services = () => {
   const [addservice, setaddserveice] = useState(false);
   const [editservice, setEditService] = useState(false);
   const [name, setName] = useState("");
   const [data, setData] = useState("");
+  const [singleServices, setSingleServices] = useState()
 
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
@@ -24,26 +26,27 @@ const Services = () => {
   const [image, setImage] = useState("");
   const [selectedServices, setSelectedServices] = useState([]);
   const [editItemId, setEditItemId] = useState(null);
+  const [isDelete , setDelete] = useState(false)
   const navigate = useNavigate();
 
   /////fetch service//////////
-  function fetchservice() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/service`)
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+
+
+  async function fetchservice() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/service`)
+    setData(data?.data);
   }
+
+
+
+
+
   useEffect(() => {
     fetchservice();
   }, []);
 
   ////////////create department//////////
-  const handlecreateservice = (e) => {
+  const handlecreateservice = async(e) => {
     e.preventDefault();
     console.log({ name, type, category, info });
 
@@ -54,38 +57,33 @@ const Services = () => {
     formData.append("info", info);
     formData.append("image", image);
 
-    axios
-      .post(`${Baseurl}/api/v1/admin/createService`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("data added successfully");
-        window.location.reload();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    try {
+      await createApiData(
+       `${Baseurl}/api/v1/admin/createService`,
+        formData
+      );
+      alert("Data added successfully");
+      setaddserveice(false);
+      fetchservice()
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
+    
   };
 
   /////////////////Delete Banner///////////
 
-  function handledelete(_id) {
-    console.log(_id);
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/admin/service/${_id}`, { headers: headers })
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          navigate("/services");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      navigate("/services");
+ async  function handledelete(_id) {
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/service/${_id}`);
+      setDelete(false)
+      fetchservice()
+
+    } catch (err) {
+      console.log(err);
     }
+   
   }
 
   // Function to handle checkbox toggle
@@ -99,6 +97,9 @@ const Services = () => {
       setSelectedServices([...selectedServices, itemId]);
     }
   };
+
+  
+
 
   ///////update Department///////
   const handleEditService = (e) => {
@@ -202,7 +203,7 @@ const Services = () => {
                           </label>
 
                           <div className="title text-[#0B50B3]">
-                            upload Image From Device /Browser
+                          {image?.name || " upload Image From Device /Browser"}
                           </div>
                         </div>
                       </div>
@@ -222,12 +223,12 @@ const Services = () => {
                   </div>
 
                   <div className="flex justify-end gap-5 m-5">
-                    <button
-                      className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]"
+                    <div
+                      className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64] cursor-pointer"
                       onClick={() => setaddserveice(false)}
                     >
                       Cancel
-                    </button>
+                    </div>
                     <button
                       type="submit"
                       className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -269,7 +270,7 @@ const Services = () => {
                       <label>Service Name</label>
                       <br />
                       <input
-                        value={name}
+                        value={name || singleServices?.name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Service Name"
                         className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -281,7 +282,7 @@ const Services = () => {
                       <label>Service Type</label>
                       <br />
                       <input
-                        value={type}
+                        value={type || singleServices?.type}
                         onChange={(e) => setType(e.target.value)}
                         placeholder="Service Type"
                         className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -291,7 +292,7 @@ const Services = () => {
                       <label>Service Category</label>
                       <br />
                       <input
-                        value={category}
+                        value={category || singleServices?.category}
                         onChange={(e) => setCategory(e.target.value)}
                         placeholder="Service Category"
                         className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -317,7 +318,7 @@ const Services = () => {
                           </label>
 
                           <div className="title text-[#0B50B3]">
-                            upload Image From Device /Browser
+                          {image?.name || " upload Image From Device /Browser"}
                           </div>
                         </div>
                       </div>
@@ -328,7 +329,7 @@ const Services = () => {
                       <label>Additional Service Information</label>
                       <br />
                       <textarea
-                        value={info}
+                        value={info || singleServices?.info}
                         onChange={(e) => setInfo(e.target.value)}
                         placeholder="Additional Service Information"
                         className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -337,12 +338,12 @@ const Services = () => {
                   </div>
 
                   <div className="flex justify-end gap-5 m-5">
-                    <button
-                      className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64]"
+                    <div
+                      className="text-[#0F2C64] p-2 pl-5 pr-5 rounded bg-white border border-[#0F2C64] cursor-pointer"
                       onClick={() => setEditService(false)}
                     >
                       Cancel
-                    </button>
+                    </div>
                     <button
                       type="submit"
                       className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
@@ -391,14 +392,44 @@ const Services = () => {
                   src={deletebtn}
                   alt=""
                   className="cursor-pointer"
-                  onClick={() => handledelete(selectedServices)}
+                  onClick={() => setDelete(selectedServices)}
                 />
+                  {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Profile ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={(e)=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+                            
+                            }
               </div>
               <div>
                 <img
                   src={edit}
                   alt=""
-                  onClick={() => setEditService(true)}
+                  onClick={() =>{
+                    fetchSingleServices(editItemId)
+                     setEditService(true)}}
                   className="cursor-pointer"
                 />
               </div>
@@ -412,7 +443,7 @@ const Services = () => {
         </div> */}
 
         <div className="flex flex-wrap gap-10 mt-10 ml-10">
-          {data?.data?.map((item) => (
+          {!!data?.length && data?.map((item) => (
             <div className="cursor-pointer" key={item._id}>
               <div className="box-shadow rounded-lg w-[180px] h-[180px] relative flex flex-col justify-center items-center">
                 <input
