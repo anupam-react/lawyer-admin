@@ -7,7 +7,7 @@ import { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
-import { createApiData } from "../utlis";
+import { createApiData, fetchApiData } from "../utlis";
 
 const Notification = () => {
   const [data, setData] = useState("");
@@ -24,16 +24,11 @@ const Notification = () => {
   console.log(selectedItemId);
   ///////////fetch notification////////////
  async function fetchNotification() {
+  const data = await fetchApiData( `${Baseurl}/api/v1/admin/notifications`);
+  console.log(data);
+  setData(data?.data);
 
-    try {
-      await createApiData(
-       `${Baseurl}/api/v1/admin/notifications`,
-        formData
-      );
-      alert("Data added successfully");
-    } catch (error) {
-      console.error("Error adding data:", error);
-    }
+   
   
   }
   useEffect(() => {
@@ -44,26 +39,27 @@ const Notification = () => {
   }, []);
 
   //////////create Notification/////////
-  const handleCreateNotification = (e) => {
+  const handleCreateNotification = async(e) => {
     e.preventDefault();
     console.log(title, message);
-    const data = {
+    const formData = {
       title: title,
       message: message,
       userType: userType,
       isEnable: isSelect
     };
-    axios
-      .post(`${Baseurl}/api/v1/admin/notifications`, data, {
-        headers: headers,
-      })
-      .then((response) => {
-        alert("data Created successfully");
-        // window.location.reload();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+
+    try {
+      await createApiData(
+      `${Baseurl}/api/v1/admin/notifications`,
+        formData
+      );
+      alert("Data added successfully");
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+  
+   
   };
 
   ///////////// Enable or Disable Notification /////////////
