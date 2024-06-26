@@ -36,6 +36,10 @@ const Services = () => {
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/service`)
     setData(data?.data);
   }
+  async function fetchSingleServices(id) {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/service/${id}`)
+    singleServices(data?.data);
+  }
 
 
 
