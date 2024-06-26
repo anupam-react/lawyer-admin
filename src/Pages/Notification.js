@@ -7,6 +7,7 @@ import { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
+import { createApiData } from "../utlis";
 
 const Notification = () => {
   const [data, setData] = useState("");
@@ -22,18 +23,18 @@ const Notification = () => {
   const navigate = useNavigate();
   console.log(selectedItemId);
   ///////////fetch notification////////////
-  function fetchNotification() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/notifications`, {
-        headers: headers,
-      })
-      .then((response) => {
-        setData(response.data);
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+ async function fetchNotification() {
+
+    try {
+      await createApiData(
+       `${Baseurl}/api/v1/admin/notifications`,
+        formData
+      );
+      alert("Data added successfully");
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+  
   }
   useEffect(() => {
     fetchNotification();

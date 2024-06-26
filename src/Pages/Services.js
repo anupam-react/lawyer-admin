@@ -12,7 +12,7 @@ import config, { headers } from "../utlis/config";
 import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { createApiData, deleteApiData, fetchApiData } from "../utlis";
+import { createApiData, deleteApiData, fetchApiData, updateApiPatch } from "../utlis";
 const Services = () => {
   const [addservice, setaddserveice] = useState(false);
   const [editservice, setEditService] = useState(false);
@@ -38,7 +38,7 @@ const Services = () => {
   }
   async function fetchSingleServices(id) {
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/service/${id}`)
-    singleServices(data?.data);
+    setSingleServices(data?.data);
   }
 
 
@@ -106,7 +106,7 @@ const Services = () => {
 
 
   ///////update Department///////
-  const handleEditService = (e) => {
+  const handleEditService = async(e) => {
     e.preventDefault();
     console.log(editItemId);
     // console.log(editItemId, name, type, info, category, image);
@@ -117,17 +117,20 @@ const Services = () => {
     formData.append("info", info);
     formData.append("image", image);
 
-    axios
-      .patch(`${Baseurl}/api/v1/admin/service/${editItemId}`, formData, {
-        headers: headers,
-      })
-      .then((res) => {
-        alert("Data Edited Successfully");
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error editing data:", error);
-      });
+    try {
+      await updateApiPatch(
+       `${Baseurl}/api/v1/admin/service/${editItemId}`,
+        formData
+      );
+      alert("Data Edited successfully");
+      setEditService(false);
+      fetchservice()
+    } catch (error) {
+      console.error("Error adding data:", error);
+    }
+
+
+  
   };
 
   return (
