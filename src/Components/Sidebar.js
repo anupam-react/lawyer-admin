@@ -82,11 +82,39 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Services</span>
           </li>
         </Link>
+        <Link to="/city">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">City</span>
+          </li>
+        </Link>
+        <Link to="/casemanager">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Case Manager</span>
+          </li>
+        </Link>
         <Link to="/banners">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={banner} alt="" className="logo"/>
 
             <span className="text-white ml-2 font-semibold">Banners</span>
+          </li>
+        </Link>
+        <Link to="/blog-category">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Blog Category</span>
+          </li>
+        </Link>
+        <Link to="/blog">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Blog</span>
           </li>
         </Link>
         <Link to="allfiles">

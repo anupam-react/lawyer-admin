@@ -25,6 +25,10 @@ import Email from "./Forgot/Email";
 import Otp from "./Forgot/Otp";
 import ProfileDatails from "./Pages/ProfileDatails";
 import Privacy from "./Pages/Privacy";
+import City from "./Pages/City";
+import CaseManager from "./Pages/CaseManager";
+import BlogCategory from "./Pages/BlogCategory";
+import Blog from "./Pages/Blog";
 
 const router = createBrowserRouter([
   {
@@ -72,7 +76,11 @@ const router = createBrowserRouter([
       { path: "/meeting", element: <PrivateRoute element={<Meeting />} /> },
       { path: "/Booking", element: <PrivateRoute element={<Booking />} /> },
       { path: "/services", element: <PrivateRoute element={<Services />} /> },
+      { path: "/city", element: <PrivateRoute element={<City />} /> },
+      { path: "/casemanager", element: <PrivateRoute element={<CaseManager />} /> },
       { path: "/banners", element: <PrivateRoute element={<Banners />} /> },
+      { path: "/blog-category", element: <PrivateRoute element={<BlogCategory />} /> },
+      { path: "/blog", element: <PrivateRoute element={<Blog />} /> },
       { path: "/allfiles", element: <PrivateRoute element={<Allfiles />} /> },
       { path: "/todolist", element: <PrivateRoute element={<Todolist />} /> },
       {

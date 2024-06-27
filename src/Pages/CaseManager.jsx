@@ -12,8 +12,8 @@ import config, { headers } from "../utlis/config";
 import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { createApiData, deleteApiData, fetchApiData, updateApiPatch } from "../utlis";
-const Services = () => {
+import { createApiData, deleteApiData, fetchApiData, updateApiData } from "../utlis";
+const CaseManager = () => {
   const [addservice, setaddserveice] = useState(false);
   const [editservice, setEditService] = useState(false);
   const [name, setName] = useState("");
@@ -33,11 +33,11 @@ const Services = () => {
 
 
   async function fetchservice() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/admin/service`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getCaseManager`)
     setData(data?.data);
   }
   async function fetchSingleServices(id) {
-    const data = await fetchApiData(`${Baseurl}/api/v1/admin/service/${id}`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getIdCaseManager/${id}`)
     setSingleServices(data?.data);
   }
 
@@ -52,22 +52,23 @@ const Services = () => {
   ////////////create department//////////
   const handlecreateservice = async(e) => {
     e.preventDefault();
-    console.log({ name, type, category, info });
-
+   
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("type", type);
-    formData.append("category", category);
-    formData.append("info", info);
     formData.append("image", image);
+    formData.append("title", name);
+    formData.append("description", info);
+ 
 
     try {
       await createApiData(
-       `${Baseurl}/api/v1/admin/createService`,
+       `${Baseurl}/api/v1/Blog/createCaseManager`,
         formData
       );
       alert("Data added successfully");
       setaddserveice(false);
+      setInfo("")
+      setImage("")
+      setName("")
       fetchservice()
     } catch (error) {
       console.error("Error adding data:", error);
@@ -80,7 +81,7 @@ const Services = () => {
 
  async  function handledelete(_id) {
     try {
-      await deleteApiData(`${Baseurl}/api/v1/admin/service/${_id}`);
+      await deleteApiData(`${Baseurl}/api/v1/Blog/deleteCaseManager/${_id}`);
       setDelete(false)
       fetchservice()
 
@@ -109,21 +110,22 @@ const Services = () => {
   const handleEditService = async(e) => {
     e.preventDefault();
     console.log(editItemId);
-    // console.log(editItemId, name, type, info, category, image);
+
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("type", type);
-    formData.append("category", category);
-    formData.append("info", info);
     formData.append("image", image);
+    formData.append("title", name);
+    formData.append("description", info);
 
     try {
-      await updateApiPatch(
-       `${Baseurl}/api/v1/admin/service/${editItemId}`,
+      await updateApiData(
+       `${Baseurl}/api/v1/Blog/updateCaseManager/${editItemId}`,
         formData
       );
       alert("Data Edited successfully");
       setEditService(false);
+      setInfo("")
+      setImage("")
+      setName("")
       fetchservice()
     } catch (error) {
       console.error("Error adding data:", error);
@@ -142,10 +144,10 @@ const Services = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Create Service
+                    Create Manager
                     <br />
                     <span className="text-[15px] text-[#525252]">
-                      Customize and change/add Services
+                      Customize and change/add Manager
                     </span>
                   </h3>
 
@@ -159,41 +161,32 @@ const Services = () => {
                 <form onSubmit={handlecreateservice}>
                   <div className=" justify-center flex">
                     <div>
-                      <label>Service Name</label>
+                      <label>Title</label>
                       <br />
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Service Name"
+                        placeholder="manage Name"
                         className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
-                  <div className=" justify-center flex gap-9 mt-4">
+                  <div className=" justify-center flex mt-4">
                     <div>
-                      <label>Service Type</label>
+                      <label>Description</label>
                       <br />
-                      <input
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        placeholder="Service Type"
-                        className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                    <div>
-                      <label>Service Category</label>
-                      <br />
-                      <input
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        placeholder="Service Category"
-                        className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      <textarea
+                        value={info}
+                        onChange={(e) => setInfo(e.target.value)}
+                        placeholder="Additional manage Information"
+                        className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
+                
 
                   <div className="mt-4 flex flex-col items-center text-left justify-center">
-                    <div className="">Upload Service image</div>
+                    <div className="">Upload Manager image</div>
                     <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                       <div className="p-5 relative rounded-lg h-[200px]">
                         <div className="flex flex-col justify-center text-center mt-3">
@@ -216,18 +209,7 @@ const Services = () => {
                       </div>
                     </div>
                   </div>
-                  <div className=" justify-center flex mt-4">
-                    <div>
-                      <label>Additional Service Information</label>
-                      <br />
-                      <textarea
-                        value={info}
-                        onChange={(e) => setInfo(e.target.value)}
-                        placeholder="Additional Service Information"
-                        className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
+                 
 
                   <div className="flex justify-end gap-5 m-5">
                     <div
@@ -238,7 +220,7 @@ const Services = () => {
                     </div>
                     <button
                       type="submit"
-                      className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
+                      className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center cursor-pointer items-center gap-2"
                     >
                       Save Changes
                     </button>
@@ -257,10 +239,10 @@ const Services = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Edit Services
+                    Edit Manager
                     <br />
                     <span className="text-[15px] text-[#525252]">
-                      Customize and change/add Services
+                      Customize and change/add Manager
                     </span>
                   </h3>
 
@@ -271,44 +253,35 @@ const Services = () => {
                     <X />
                   </span>
                 </div>
-                <form onSubmit={handleEditService}>
+                <div >
                   <div className=" justify-center flex">
                     <div>
-                      <label>Service Name</label>
+                      <label>City Name</label>
                       <br />
                       <input
-                        value={name || singleServices?.name}
+                        value={name || singleServices?.title}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Service Name"
                         className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
-                  <div className=" justify-center flex gap-9 mt-4">
+                  <div className=" justify-center flex mt-4">
                     <div>
-                      <label>Service Type</label>
+                      <label>Description</label>
                       <br />
-                      <input
-                        value={type || singleServices?.type}
-                        onChange={(e) => setType(e.target.value)}
-                        placeholder="Service Type"
-                        className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                    <div>
-                      <label>Service Category</label>
-                      <br />
-                      <input
-                        value={category || singleServices?.category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        placeholder="Service Category"
-                        className="placeholder: block w-[249px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      <textarea
+                        value={info || singleServices?.description}
+                        onChange={(e) => setInfo(e.target.value)}
+                        placeholder="Additional manage Information"
+                        className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
                   </div>
+               
 
                   <div className="mt-4 flex flex-col items-center text-left justify-center">
-                    <div className="">Upload Service image</div>
+                    <div className="">Upload Manage image</div>
                     <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                       <div className="p-5 relative rounded-lg h-[200px]">
                         <div className="flex flex-col justify-center text-center mt-3">
@@ -331,18 +304,7 @@ const Services = () => {
                       </div>
                     </div>
                   </div>
-                  <div className=" justify-center flex mt-4">
-                    <div>
-                      <label>Additional Service Information</label>
-                      <br />
-                      <textarea
-                        value={info || singleServices?.info}
-                        onChange={(e) => setInfo(e.target.value)}
-                        placeholder="Additional Service Information"
-                        className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
+               
 
                   <div className="flex justify-end gap-5 m-5">
                     <div
@@ -353,12 +315,13 @@ const Services = () => {
                     </div>
                     <button
                       type="submit"
-                      className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
+                      onClick={handleEditService}
+                      className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2 cursor-pointer"
                     >
                       Save Changes
                     </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
@@ -369,7 +332,7 @@ const Services = () => {
       <div className="h-[600px]">
         <div className="flex justify-between items-center pt-5 ml-5 mr-5">
           <div className="text-2xl mb-5 text-[black] font-semibold ">
-            Services
+            Case Manager
           </div>
           <div className="flex">
             <div className="flex justify-center items-center gap-5">
@@ -390,7 +353,7 @@ const Services = () => {
                 className="bg-[#0F2C64] p-1 pl-3 pr-3 rounded text-white"
                 onClick={() => setaddserveice(true)}
               >
-                Create Service
+                Create Manager
               </button>
             </div>
             <div className="flex justify-center items-center gap-3">
@@ -407,7 +370,7 @@ const Services = () => {
                               <div className="relative w-auto my-6 mx-auto max-w-5xl">
                                 <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
                                   <div className="text-center font-semibold text-[20px]">
-                                    Confirm Delete Profile ?
+                                    Confirm Delete Manager ?
                                   </div>
                                   <hr className="my-6" />
 
@@ -452,7 +415,7 @@ const Services = () => {
         <div className="flex flex-wrap gap-10 mt-10 ml-10">
           {!!data?.length && data?.map((item) => (
             <div className="cursor-pointer" key={item._id}>
-              <div className="box-shadow rounded-lg w-[180px] h-[180px] relative flex flex-col justify-center items-center">
+              <div className="box-shadow rounded-lg p-4 relative flex flex-col justify-center items-center">
                 <input
                   type="checkbox"
                   className="w-[15px] absolute right-1 top-1 h-[15px]"
@@ -463,36 +426,16 @@ const Services = () => {
                   <img src={item.image} alt="" className="w-10" />
                 </div>
                 <div className="flex justify-center mt-5 text-black font-semibold">
-                  {item.name}
+                  {item?.title}
                 </div>
               </div>
             </div>
           ))}
 
-          {/* <div className="cursor-pointer">
-            <div className="box-shadow  w-[180px] h-[180px] rounded-lg flex flex-col justify-center items-center">
-              <div>
-                <img src={criminal} alt="" />
-              </div>
-              <div className="flex justify-center mt-5 text-black font-semibold">
-                Criminal Lawyer
-              </div>
-            </div>
-          </div>
-          <div className="cursor-pointer">
-            <div className="box-shadow w-[180px] h-[180px] rounded-lg flex flex-col justify-center items-center">
-              <div>
-                <img src={property} alt="" />
-              </div>
-              <div className="flex justify-center mt-5 text-black font-semibold">
-                Tax Lawyer
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </>
   );
 };
 
-export default Services;
+export default CaseManager;
