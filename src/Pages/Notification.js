@@ -93,7 +93,7 @@ const Notification = () => {
     try {
       await deleteApiData(`${Baseurl}/api/v1/admin/notifications/${_id}`);
       setDelete(false)
-      fetchbanner()
+      fetchNotification()
 
     } catch (err) {
       console.log(err);
