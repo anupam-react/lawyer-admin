@@ -7,7 +7,7 @@ import { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
-import { createApiData, fetchApiData } from "../utlis";
+import { createApiData, deleteApiData, fetchApiData } from "../utlis";
 
 const Notification = () => {
   const [data, setData] = useState("");
@@ -20,6 +20,7 @@ const Notification = () => {
   const [selectedNotification, setSelectedNotification] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isSelect , setSelect] = useState(true)
+  const [isDelete , setDelete] = useState(false)
   const navigate = useNavigate();
   console.log(selectedItemId);
   ///////////fetch notification////////////
@@ -87,25 +88,18 @@ const Notification = () => {
 
   /////////////////Delete Notification///////////
 
-  function handledelete(_id) {
-    // console.log(_id);
-    const confirm = window.confirm("do you want to delete ?");
-    if (confirm) {
-      axios
-        .delete(`${Baseurl}/api/v1/admin/notifications/${_id}`, {
-          headers: headers,
-        })
-        .then((res) => {
-          alert("record had deleted");
-          window.location.reload();
-          navigate("/notification");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      navigate("/notification");
+  async function handledelete(_id) {
+
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/notifications/${_id}`);
+      setDelete(false)
+      fetchbanner()
+
+    } catch (err) {
+      console.log(err);
     }
+   
+  
   }
 
   // Function to handle checkbox toggle
@@ -141,9 +135,36 @@ const Notification = () => {
                   src={deletebtn}
                   alt=""
                   className="cursor-pointer"
-                  onClick={() => handledelete(selectedNotification)}
+                  onClick={() => setDelete(true)}
                 />
               </div>
+              {isDelete &&
+                          <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                  <div className="text-center font-semibold text-[20px]">
+                                    Confirm Delete Notification ?
+                                  </div>
+                                  <hr className="my-6" />
+
+                                  <div className="flex justify-center mt-5">
+                                    <button onClick={(e)=>handledelete(selectedNotification)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
+                                      Yes
+                                    </button>
+                                    <button
+                                      onClick={() => setDelete(false)}
+                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                    >
+                                      Not Now
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                          </>
+}
             </div>
           </div>
           <hr />
@@ -244,7 +265,7 @@ const Notification = () => {
                     Date Added
                   </th>
                   <th className="w-[100px] text-center text-[#6D6D6D] border border-slate-300 ...">
-                    {/* Edit or Push */} Push
+                    {/* Edit or Push */} Action
                   </th>
                 </tr>
               </thead>

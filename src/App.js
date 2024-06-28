@@ -29,6 +29,8 @@ import City from "./Pages/City";
 import CaseManager from "./Pages/CaseManager";
 import BlogCategory from "./Pages/BlogCategory";
 import Blog from "./Pages/Blog";
+import WhyUserLove from "./Pages/WhyUserLove";
+import TrustBy from "./Pages/TrustBy";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +83,8 @@ const router = createBrowserRouter([
       { path: "/banners", element: <PrivateRoute element={<Banners />} /> },
       { path: "/blog-category", element: <PrivateRoute element={<BlogCategory />} /> },
       { path: "/blog", element: <PrivateRoute element={<Blog />} /> },
+      { path: "/whyuserlove", element: <PrivateRoute element={<WhyUserLove />} /> },
+      { path: "/trustby", element: <PrivateRoute element={<TrustBy />} /> },
       { path: "/allfiles", element: <PrivateRoute element={<Allfiles />} /> },
       { path: "/todolist", element: <PrivateRoute element={<Todolist />} /> },
       {

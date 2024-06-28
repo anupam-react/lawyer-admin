@@ -34,10 +34,26 @@ const Totalusers = () => {
   const [singleUser, setSingleUser] = useState()
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(data);
   const [isDelete , setDelete] = useState(false)
 
   const navigate = useNavigate();
 
+  const handleSearch = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+    // Filter the data based on the search term
+    const results = data?.filter(
+      (item) =>
+        item?.fullName?.toLowerCase().includes(term.toLowerCase()) ||
+        item?.firstName?.toLowerCase().includes(term.toLowerCase()) ||
+        item?.email?.toLowerCase().includes(term.toLowerCase()) ||
+        item?.phone?.toLowerCase().includes(term.toLowerCase()) ||
+        item?.country?.toLowerCase().includes(term.toLowerCase())   
+    );
+    setSearchResults(results);
+  };
 
 
 
@@ -46,7 +62,9 @@ const Totalusers = () => {
    // Logic to calculate the index of the first item on the current page
    const firstIndex = lastIndex - itemsPerPage;
    // Slice the data array to get the items for the current page
-   let currentItems = data?.slice(firstIndex, lastIndex)
+   let currentItems = !searchResults?.length
+   ? data?.slice(firstIndex, lastIndex)
+   : searchResults?.slice(firstIndex, lastIndex);
      
  
    // Function to handle next page
@@ -363,6 +381,8 @@ const Totalusers = () => {
                     </div>
                     <input
                       type="text"
+                      value={searchTerm}
+                      onChange={handleSearch}
                       className="placeholder: ml-2 block w-[250px] rounded-3xl border-0 py-1.5 pl-10 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       placeholder="Search User"
                     />

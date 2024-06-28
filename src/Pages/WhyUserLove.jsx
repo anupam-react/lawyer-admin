@@ -10,13 +10,12 @@ import { headers } from "../utlis/config";
 import { Navigate } from "react-router-dom";
 import Spinner from "../utlis/Spinner";
 import { createApiData, deleteApiData, fetchApiData, updateApiData } from "../utlis";
-const Blog = () => {
+const WhyUserLove = () => {
   const [loading, setLoading] = useState(true);
   const [addbanner, setaddbanner] = useState(false);
   const [editBanner, setEditbanner] = useState(false);
 
   const [data, setData] = useState("");
-  const [category, setCategory] = useState([]);
   const [bannerInfo, setBannerInfo] = useState("");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
@@ -28,24 +27,21 @@ const Blog = () => {
 
   /////////fetch banner ///////////
   async function fetchbanner() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getBlog`);
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getWhyUserLove`);
     setData(data?.data?.reverse());
   }
 
   const fetchSingleBanner = async(id) =>{
-    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getIdBlog/${id}`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getIdWhyUserLove/${id}`)
 
     setBannerInfo(data?.data);
   }
 
-  async function fetchCategory() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/BlogCategory/getBlogCategory`)
-    setCategory(data?.data);
-  }
+
 
   useEffect(() => {
     fetchbanner();
-    fetchCategory()
+ 
     setTimeout(() => {
       setLoading();
     }, 1000);
@@ -61,15 +57,18 @@ const Blog = () => {
     formData.append("description", desc);
     formData.append("image", image);
     formData.append("title", title);
-    formData.append("blogCategoryId", blogCategoryId || category[0]?._id);
+
 
     try {
       await createApiData(
-        `${Baseurl}/api/v1/Blog/createBlog`,
+        `${Baseurl}/api/v1/Blog/createWhyUserLove`,
         formData
       );
       alert("Data added successfully");
       setaddbanner(false);
+      setTitle("")
+      setImage("")
+      setDesc("")
       fetchbanner();
     } catch (error) {
       console.error("Error adding data:", error);
@@ -84,7 +83,7 @@ const Blog = () => {
   async function handledelete(_id) {
 
     try {
-      await deleteApiData(`${Baseurl}/api/v1/Blog/deleteBlog/${_id}`);
+      await deleteApiData(`${Baseurl}/api/v1/Blog/deleteWhyUserLove/${_id}`);
       setDelete(false)
       fetchbanner()
 
@@ -102,15 +101,18 @@ const Blog = () => {
     formData.append("description", desc);
     formData.append("image", image);
     formData.append("title", title);
-    formData.append("blogCategoryId", blogCategoryId || bannerInfo?.blogCategoryId);
+
 
     try {
       await updateApiData(
-        `${Baseurl}/api/v1/Blog/updateBlog/${editItemId}`,
+        `${Baseurl}/api/v1/Blog/updateWhyUserLove/${editItemId}`,
         formData
       );
       alert("Data Edited Successfully");
       setEditbanner(false);
+      setTitle("")
+      setImage("")
+      setDesc("")
       fetchbanner();
     } catch (error) {
       console.error("Error editing data:", error);
@@ -129,10 +131,10 @@ const Blog = () => {
            <div className="rounded h-[700px]">
            <div className="flex  justify-between items-center pt-5 ml-5 mr-5">
              <div className="text-2xl mb-5  text-black font-semibold">
-               Blog
+             Why User Love
                <br />
                <span className="text-[15px] text-[#525252]">
-                 Edit,Delete or Push Blog
+                
                </span>
              </div>
              <div className="flex justify-center items-center gap-5">
@@ -156,37 +158,24 @@ const Blog = () => {
            <form onSubmit={handleeditbanner}>
              <div className="flex flex-wrap gap-5 ml-10 mt-10">
                <div>
-                 <label>Blog Title</label>
+                 <label>Title</label>
                  <br />
                  <input
                    value={title || bannerInfo?.title}
                    onChange={(e) => setTitle(e.target.value)}
-                   placeholder="Blog Title"
+                   placeholder="Title"
                    className="placeholder: block w-[450px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
-               <div>
-                 <label>Category</label>
-                 <br />
-                 <select name=""  className="placeholder: block w-[150px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="" value={blogCategoryId || bannerInfo?.blogCategoryId}
-             onChange={(e) => setBlogCategoryId(e.target.value)}>
-               {
-                 category?.map((d,i)=>(
-                   <option value={d?._id}>{d?.title}</option>
-
-                 ))
-               }
-                 </select>
-               
-               </div>
+           
              
              </div>
              <div className="ml-10 mt-5">
                <div>
-                 <label>Blog Content</label>
+                 <label>Description</label>
                  <br />
                  <input
-                   placeholder="Blog Content"
+                   placeholder=" Content"
                    value={desc || bannerInfo?.description}
                    onChange={(e) => setDesc(e.target.value)}
                    className="placeholder: block w-[82%] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -195,7 +184,7 @@ const Blog = () => {
              </div>
 
              <div className="m-10">
-               <label>Upload Blog Image</label>
+               <label>Upload Image</label>
 
                <div className="bg-[#E6EEFD] h-[150px] w-[600px] rounded-xl">
                  <div className="p-5 relative rounded-lg h-[200px]">
@@ -244,10 +233,10 @@ const Blog = () => {
                   <div className="rounded h-[700px]">
                     <div className="flex  justify-between items-center pt-5 ml-5 mr-5">
                       <div className="text-2xl mb-5  text-black font-semibold">
-                        Blog
+                      Why User Love
                         <br />
                         <span className="text-[15px] text-[#525252]">
-                          Edit,Delete or Push Blog
+                         
                         </span>
                       </div>
                       <div className="flex justify-center items-center gap-5">
@@ -271,37 +260,24 @@ const Blog = () => {
                     <form onSubmit={handlecreateBanner}>
                       <div className="flex flex-wrap gap-5 ml-10 mt-10">
                         <div>
-                          <label>Blog Title</label>
+                          <label>Title</label>
                           <br />
                           <input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Blog Title"
+                            placeholder="Title"
                             className="placeholder: block w-[450px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
-                        <div>
-                          <label>Category</label>
-                          <br />
-                          <select name=""  className="placeholder: block w-[150px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="" value={blogCategoryId}
-                      onChange={(e) => setBlogCategoryId(e.target.value)}>
-                        {
-                          category?.map((d,i)=>(
-                            <option value={d?._id}>{d?.title}</option>
-
-                          ))
-                        }
-                          </select>
-                        
-                        </div>
+                    
                       
                       </div>
                       <div className="ml-10 mt-5">
                         <div>
-                          <label>Blog Content</label>
+                          <label>Description</label>
                           <br />
                           <input
-                            placeholder="Blog Content"
+                            placeholder="Content"
                             value={desc}
                             onChange={(e) => setDesc(e.target.value)}
                             className="placeholder: block w-[82%] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -310,7 +286,7 @@ const Blog = () => {
                       </div>
 
                       <div className="m-10">
-                        <label>Upload Blog Image</label>
+                        <label>Upload  Image</label>
 
                         <div className="bg-[#E6EEFD] h-[150px] w-[600px] rounded-xl">
                           <div className="p-5 relative rounded-lg h-[200px]">
@@ -357,7 +333,7 @@ const Blog = () => {
                 <>
                   <div className="flex justify-between items-center pt-5 ml-5 mr-5">
                     <div className="text-2xl mb-5 text-[black] font-semibold ">
-                    Blog
+                    Why User Love
                     </div>
                     <div className="flex">
                       <div className="flex justify-center items-center gap-5">
@@ -365,7 +341,7 @@ const Blog = () => {
                           className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded-3xl text-white"
                           onClick={() => setaddbanner(true)}
                         >
-                          Create Blog +
+                          Create
                         </button>
                       </div>
                     </div>
@@ -375,14 +351,14 @@ const Blog = () => {
                       <thead>
                         <tr className="border-t-2 border-b-2 m-5">
                           <th className="text-center text-[#6D6D6D] w-[100px]">
-                          Blog
+                         Image
                           </th>
                           <th className="w-[100px] text-center text-[#6D6D6D]">
                             Title
                           </th>
                          
                           <th className="w-[150px] text-center text-[#6D6D6D]">
-                          Blog Description
+                           Description
                           </th>
                         </tr>
                       </thead>
@@ -422,7 +398,7 @@ const Blog = () => {
                               <div className="relative w-auto my-6 mx-auto max-w-5xl">
                                 <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
                                   <div className="text-center font-semibold text-[20px]">
-                                    Confirm Delete Blog ?
+                                    Confirm Delete?
                                   </div>
                                   <hr className="my-6" />
 
@@ -471,4 +447,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default WhyUserLove;

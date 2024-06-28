@@ -13,16 +13,12 @@ import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { createApiData, deleteApiData, fetchApiData, updateApiData, updateApiPatch } from "../utlis";
-const City = () => {
+const TrustBy = () => {
   const [addservice, setaddserveice] = useState(false);
   const [editservice, setEditService] = useState(false);
   const [name, setName] = useState("");
   const [data, setData] = useState("");
   const [singleServices, setSingleServices] = useState()
-
-  const [type, setType] = useState("");
-  const [category, setCategory] = useState("");
-  const [info, setInfo] = useState("");
   const [image, setImage] = useState("");
   const [selectedServices, setSelectedServices] = useState([]);
   const [editItemId, setEditItemId] = useState(null);
@@ -33,17 +29,13 @@ const City = () => {
 
 
   async function fetchservice() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/City/getCity`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getTrusted`)
     setData(data?.data);
   }
   async function fetchSingleServices(id) {
-    const data = await fetchApiData(`${Baseurl}/api/v1/City/getIdCity/${id}`)
+    const data = await fetchApiData(`${Baseurl}/api/v1/Blog/getIdTrustedBy/${id}`)
     setSingleServices(data?.data);
   }
-
-
-
-
 
   useEffect(() => {
     fetchservice();
@@ -55,18 +47,16 @@ const City = () => {
    
     const formData = new FormData();
     formData.append("image", image);
-    formData.append("city", name);
- 
 
     try {
       await createApiData(
-       `${Baseurl}/api/v1/City/createCity`,
+       `${Baseurl}/api/v1/Blog/createTrustedBy`,
         formData
       );
       alert("Data added successfully");
       setaddserveice(false);
       setImage("")
-      setName("")
+  
       fetchservice()
     } catch (error) {
       console.error("Error adding data:", error);
@@ -79,7 +69,7 @@ const City = () => {
 
  async  function handledelete(_id) {
     try {
-      await deleteApiData(`${Baseurl}/api/v1/City/deleteCity/${_id}`);
+      await deleteApiData(`${Baseurl}/api/v1/Blog/deleteTrustedBy/${_id}`);
       setDelete(false)
       fetchservice()
 
@@ -116,7 +106,7 @@ const City = () => {
 
     try {
       await updateApiData(
-       `${Baseurl}/api/v1/City/updateCity/${editItemId}`,
+       `${Baseurl}/api/v1/Blog/updateTrustedBy/${editItemId}`,
         formData
       );
       alert("Data Edited successfully");
@@ -141,11 +131,9 @@ const City = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Create City
+                    Create
                     <br />
-                    <span className="text-[15px] text-[#525252]">
-                      Customize and change/add City
-                    </span>
+                    
                   </h3>
 
                   <span
@@ -156,22 +144,12 @@ const City = () => {
                   </span>
                 </div>
                 <form onSubmit={handlecreateservice}>
-                  <div className=" justify-center flex">
-                    <div>
-                      <label>City Name</label>
-                      <br />
-                      <input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Service Name"
-                        className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
+                 
+                 
                 
 
                   <div className="mt-4 flex flex-col items-center text-left justify-center">
-                    <div className="">Upload City image</div>
+                    <div className="">Upload image</div>
                     <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                       <div className="p-5 relative rounded-lg h-[200px]">
                         <div className="flex flex-col justify-center text-center mt-3">
@@ -224,11 +202,9 @@ const City = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Edit City
+                    Edit 
                     <br />
-                    <span className="text-[15px] text-[#525252]">
-                      Customize and change/add City
-                    </span>
+                    
                   </h3>
 
                   <span
@@ -239,22 +215,11 @@ const City = () => {
                   </span>
                 </div>
                 <div >
-                  <div className=" justify-center flex">
-                    <div>
-                      <label>City Name</label>
-                      <br />
-                      <input
-                        value={name || singleServices?.city}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Service Name"
-                        className="placeholder: block w-[533px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
+                 
                
 
                   <div className="mt-4 flex flex-col items-center text-left justify-center">
-                    <div className="">Upload city image</div>
+                    <div className="">Upload image</div>
                     <div className="bg-[#E6EEFD] h-[150px] w-[533px]  rounded-xl">
                       <div className="p-5 relative rounded-lg h-[200px]">
                         <div className="flex flex-col justify-center text-center mt-3">
@@ -305,7 +270,7 @@ const City = () => {
       <div className="h-[600px]">
         <div className="flex justify-between items-center pt-5 ml-5 mr-5">
           <div className="text-2xl mb-5 text-[black] font-semibold ">
-            Cities
+           Trust By
           </div>
           <div className="flex">
             <div className="flex justify-center items-center gap-5">
@@ -326,7 +291,7 @@ const City = () => {
                 className="bg-[#0F2C64] p-1 pl-3 pr-3 rounded text-white"
                 onClick={() => setaddserveice(true)}
               >
-                Create City
+                Create
               </button>
             </div>
             <div className="flex justify-center items-center gap-3">
@@ -343,7 +308,7 @@ const City = () => {
                               <div className="relative w-auto my-6 mx-auto max-w-5xl">
                                 <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
                                   <div className="text-center font-semibold text-[20px]">
-                                    Confirm Delete City ?
+                                    Confirm Delete ?
                                   </div>
                                   <hr className="my-6" />
 
@@ -396,11 +361,9 @@ const City = () => {
                   checked={selectedServices.includes(item._id)}
                 />
                 <div className="w-[100px] h-[100px] border-2 rounded-full flex justify-center items-center">
-                  <img src={item.image} alt="" className="w-10" />
+                  <img src={item?.image} alt="" className="w-10" />
                 </div>
-                <div className="flex justify-center mt-5 text-black font-semibold">
-                  {item.city}
-                </div>
+                
               </div>
             </div>
           ))}
@@ -411,4 +374,4 @@ const City = () => {
   );
 };
 
-export default City;
+export default TrustBy;

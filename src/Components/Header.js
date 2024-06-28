@@ -266,7 +266,7 @@ const Header = () => {
                   </span>
                 </Link>
                 <div onClick={() => setfilter(true)} className="cursor-pointer">
-                  <img src={filterlogo} alt="filter" />
+                  {/* <img src={filterlogo} alt="filter" /> */}
                 </div>
               </div>
             </div>

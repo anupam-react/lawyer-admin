@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="bg-[#0F2C64] h-[1000px]">
+    <div className="bg-[#0F2C64] ">
       <div className="text-center text-white text-2xl pt-10">Admin</div>
       <ul className="mt-10 items-start">
         <Link to="/dashboard">
@@ -115,6 +115,20 @@ const Sidebar = () => {
             <img src={banner} alt="" className="logo"/>
 
             <span className="text-white ml-2 font-semibold">Blog</span>
+          </li>
+        </Link>
+        <Link to="/whyuserlove">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Why User Love</span>
+          </li>
+        </Link>
+        <Link to="/trustby">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Trust By</span>
           </li>
         </Link>
         <Link to="allfiles">
