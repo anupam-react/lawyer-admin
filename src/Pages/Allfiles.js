@@ -7,28 +7,30 @@ import upload from "../Assets/upload.svg";
 import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import config, { headers } from "../utlis/config";
+import { fetchApiData } from "../utlis";
+import { Link } from "react-router-dom";
 
 const Allfiles = () => {
   const [addnewfile, setaddnewfile] = useState(false);
   const [data, setdata] = useState("");
 
   //////////fetch Allfiles//////////
-  function fetchAllfiles() {
-    axios
-      .get(`${Baseurl}/api/v1/admin/getSaveDocument`, {
-        headers: headers,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setdata(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+  async function fetchAllfiles() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/getSaveDocument`);
+    const extractedDocuments =data?.flatMap(obj => obj.documents);
+
+    // Logging the extracted documents array
+
+    setdata(extractedDocuments);
   }
+
+
   useEffect(() => {
     fetchAllfiles();
   }, []);
+
+
 
   return (
     <>
@@ -148,7 +150,7 @@ const Allfiles = () => {
                 <input type="checkbox" />
               </th> */}
               <th className="w-[200px] text-[#6D6D6D] border border-slate-300 ... bg-[#F6F9FF]">
-                File Title
+                File CaseId
               </th>
               <th className="text-center text-[#6D6D6D] w-[300px] border border-slate-300 ... bg-[#F6F9FF]">
                 File Type
@@ -158,44 +160,46 @@ const Allfiles = () => {
               </th>
 
               <th className="w-[200px] text-center text-[#6D6D6D] border border-slate-300 ... bg-[#F6F9FF]">
-                Uploaded on
+                Case LawyerId
               </th>
 
               <th className="w-[150px] text-center text-[#6D6D6D] border border-slate-300 ... bg-[#F6F9FF]"></th>
             </tr>
           </thead>
           <tbody>
-            {data?.[0]?.documents?.map((item) => (
+            {!!data?.length && data?.map((item) => (
               <tr className="" key={item._id}>
                 {/* <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
                   <input type="checkbox" />
                 </td> */}
                 <td className="text-center p-5 border border-slate-300 ... bg-[#F6F9FF]">
-                  {item.id.lawyerId}
+                  {item?.id?.casesId
+                  }
                 </td>
                 <td className="w-[200px]  border border-slate-300 ... bg-[#F6F9FF]">
                   <div className="flex justify-center items-center">
                     <img
-                      src={item.id.image}
+                      src={item?.id?.image}
                       className="w-[50px] h-[50px]"
                       alt=""
                     />
                   </div>
                 </td>
                 <td className="w-[200px] text-center border border-slate-300 ... bg-[#F6F9FF] text-sm">
-                  {item.id.desc}
+                  {item?.id?.desc}
                 </td>
 
                 <td className="w-[50px] text-center border border-slate-300 ... bg-[#F6F9FF]">
-                  {item.id.lawyerId}
+                  {item?.id?.lawyerId}
                 </td>
-
                 <td className="w-[50px] text-center border border-slate-300 ... bg-[#F6F9FF]">
+                <Link to={`${item?.id?.image}`}>
                   <span className="flex gap-2 justify-center">
                     <img src={download} alt="" />
                     {/* <img src={deletebtn} alt="" />
                     <img src={editbtn} alt="" /> */}
                   </span>
+                </Link>
                 </td>
               </tr>
             ))}

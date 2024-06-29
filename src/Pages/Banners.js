@@ -424,11 +424,7 @@ const Banners = () => {
                             </td>
                             <td className="w-[150px]">
                               <span className="flex ml-20 gap-5">
-                                <img
-                                  src={bellicon}
-                                  alt=""
-                                  className="cursor-pointer"
-                                />
+                                
                                 <img
                                   src={deletebtn}
                                   alt=""

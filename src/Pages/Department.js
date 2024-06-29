@@ -387,7 +387,7 @@ const Department = () => {
               </div>
               <div className="flex">
                 <div className="flex justify-center items-center gap-5">
-                  <div className="relative mt-2 rounded-md">
+                  {/* <div className="relative mt-2 rounded-md">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <span className="bg-[#0F2C64] p-2.5  ml-[-3px] rounded-l-full text-white">
                         <FaSearch />
@@ -398,7 +398,7 @@ const Department = () => {
                       className="placeholder: ml-2 block w-[250px] rounded-3xl border-0 py-1.5 pl-10 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       placeholder="Search Lawyer"
                     />
-                  </div>
+                  </div> */}
 
                   <button
                     className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white"

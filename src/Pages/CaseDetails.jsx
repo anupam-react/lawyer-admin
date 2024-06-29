@@ -1,8 +1,11 @@
 import React from 'react'
 
 import goback from "../Assets/goback.svg";
+import { Link } from 'react-router-dom';
 
 const CaseDetails = ({caseData , setEditcases, setCaseDetails , setEditItemId}) => {
+
+
 
   return (
     <div>    
@@ -170,11 +173,12 @@ const CaseDetails = ({caseData , setEditcases, setCaseDetails , setEditItemId}) 
     </div>
 
       <div className="flex justify-end gap-5 mt-20 mr-5">
-        
-        <button type="submit" className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2">
+        <Link to={`${caseData?.notes?.[0]?.image}`}>
+        <button  className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2">
         Download Case File
         <img src='../Mask group (3).png' alt="" />
         </button>
+        </Link>
       </div>
     </div>
 

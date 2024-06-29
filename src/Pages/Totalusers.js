@@ -396,7 +396,7 @@ const Totalusers = () => {
                   <tr>
                     {/* <th className="w-[100px] text-left text-[#6D6D6D]"></th> */}
                     <th className="w-[200px] pl-5 text-left text-[#6D6D6D]">
-                      Lawyer Name
+                      User Name
                     </th>
                     <th className="text-left text-[#6D6D6D] w-[250px]">
                       Email

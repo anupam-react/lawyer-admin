@@ -200,7 +200,7 @@ const Header = () => {
           </div>
 
           <div className="flex justify-center items-center gap-10">
-            <div className="relative mt-2 rounded-md">
+            {/* <div className="relative mt-2 rounded-md">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <span className="bg-[#0F2C64] p-2  rounded-tl rounded-bl text-white">
                   <FaSearch />
@@ -211,7 +211,7 @@ const Header = () => {
                 className="placeholder: ml-2 block w-[350px] rounded-md border-0 py-1.5 pl-10 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Search in admin panel"
               />
-            </div>
+            </div> */}
             <div>
               <div className="flex justify-center items-center gap-4">
                 <div className="relative">
