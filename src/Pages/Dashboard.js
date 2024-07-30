@@ -239,11 +239,11 @@ const Dashboard = () => {
               <div className="flex justify-between items-center">
                 <div className="text-2xl font-medium">Latest Transactions</div>
 
-                <div>
+                {/* <div>
                   <select className="bg-[#0F2C64] text-white px-6 h-[50px] rounded-2xl">
                     <option>All Transactions</option>
                   </select>
-                </div>
+                </div> */}
               </div>
               <div className="box-shadow rounded-xl mb-[200px] mt-5 p-5">
                 <table className="w-full">
