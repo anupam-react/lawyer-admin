@@ -17,7 +17,7 @@ const Booking = () => {
 
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/upcomingAppointment`)
     console.log(data?.data)
-    setUpcomingdata(data?.data?.reverse());
+    setUpcomingdata(data?.data);
 
   }
 
@@ -26,7 +26,7 @@ const Booking = () => {
   async function fetchpastbooking() {
 
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/pastAppointment`)
-    setPastdata(data?.data?.reverse());
+    setPastdata(data?.data);
     
   }
  
@@ -34,7 +34,7 @@ const Booking = () => {
   //////////fetch cancelledbooking//////////
   async function fetchcancelledbooking() {
     const data = await fetchApiData(`${Baseurl}/api/v1/admin/allCancelAppointment`)
-    setCancelleddata(data?.data?.reverse());
+    setCancelleddata(data?.data);
   
   }
   useEffect(() => {
@@ -104,9 +104,9 @@ const Booking = () => {
                       Location
                     </th>
 
-                    <th className="w-[150px] text-center text-[#0F2C64]">
+                    {/* <th className="w-[150px] text-center text-[#0F2C64]">
                       Reason
-                    </th>
+                    </th> */}
                     <th className="w-[150px] text-center text-[#0F2C64]"></th>
                   </tr>
                 </thead>
@@ -133,12 +133,12 @@ const Booking = () => {
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
-                      <td className="w-[50px] text-center">Marriage Problem</td>
+                      {/* <td className="w-[50px] text-center">Marriage Problem</td> */}
                       <td className=" text-center ">
-                        <span className="bg-[#EDEDED] text-[#0F2C64] rounded-2xl w-[150px] pl-2 flex gap-1 ">
+                        {/* <span className="bg-[#EDEDED] text-[#0F2C64] rounded-2xl w-[150px] pl-2 flex gap-1 ">
                           <img src={timer} alt="" />
                           10 min booked
-                        </span>
+                        </span> */}
                       </td>
                     </tr>
                   ))}
@@ -166,10 +166,10 @@ const Booking = () => {
                     <th className=" w-[100px] text-center text-[#0F2C64]">
                       Location
                     </th>
-
+{/* 
                     <th className="w-[150px] text-center text-[#0F2C64]">
                       Cancelled Reason
-                    </th>
+                    </th> */}
                     <th className="w-[150px] text-center text-[#0F2C64]"></th>
                   </tr>
                 </thead>
@@ -194,13 +194,13 @@ const Booking = () => {
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
-                      <td className="w-[50px] text-center">Marriage Problem</td>
-                      <td className=" text-center ">
+                      {/* <td className="w-[50px] text-center">Marriage Problem</td> */}
+                      {/* <td className=" text-center ">
                         <span className="bg-[#EDEDED] text-[#0F2C64] rounded-2xl w-[150px] pl-2 flex gap-1 ">
                           <img src={timer} alt="" />
                           10 min booked
                         </span>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -228,9 +228,9 @@ const Booking = () => {
                       Location
                     </th>
 
-                    <th className="w-[150px] text-center text-[#0F2C64]">
+                    {/* <th className="w-[150px] text-center text-[#0F2C64]">
                       Cancelled Reason
-                    </th>
+                    </th> */}
                     <th className="w-[150px] text-center text-[#0F2C64]"></th>
                   </tr>
                 </thead>
@@ -255,13 +255,13 @@ const Booking = () => {
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
-                      <td className="w-[50px] text-center">Marriage Problem</td>
-                      <td className=" text-center ">
+                      {/* <td className="w-[50px] text-center">Marriage Problem</td> */}
+                      {/* <td className=" text-center ">
                         <span className="bg-[#EDEDED] text-[#0F2C64] rounded-2xl w-[150px] pl-2 flex gap-1 ">
                           <img src={timer} alt="" />
                           10 min booked
                         </span>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
