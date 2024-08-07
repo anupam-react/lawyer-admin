@@ -46,7 +46,7 @@ const Lawyers = () => {
   const [expertises, setExpertises] = useState([]);
 
   const [fullName, setFullName] = useState("");
-
+  const [categoryId, setCategoryId] = useState("");
   const [editItemId, setEditItemId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -54,7 +54,20 @@ const Lawyers = () => {
   const [searchResults, setSearchResults] = useState(data);
   const [isDelete , setDelete] = useState(false)
 
+  const [category, setCategory] = useState()
+
   const navigate = useNavigate();
+
+  async function fetchCategory() {
+    const data = await fetchApiData('https://shlok-mittal-lawyer-backend.vercel.app/api/v1/category');
+    setCategory(data?.data);
+  }
+
+  useEffect(()=>{
+    fetchCategory()
+  },[])
+
+
 
   const handleSearch = (event) => {
     const term = event.target.value;
@@ -141,6 +154,7 @@ const Lawyers = () => {
     formData.append("barCertificateNo", barCertificateNo);
     formData.append("barRegistrationImage", barRegistrationImage);
     formData.append("barCertificateImage", barCertificateImage);
+    formData.append("categoryId[0]", categoryId || category[0]?._id);
     formData.append("state", state);
     formData.append("district", district);
     formData.append("pincode", pincode);
@@ -181,6 +195,7 @@ const Lawyers = () => {
     formData.append("barCertificateNo", barCertificateNo);
     formData.append("barRegistrationImage", barRegistrationImage);
     formData.append("barCertificateImage", barCertificateImage);
+    formData.append("categoryId[0]", categoryId || category[0]?._id);
 
     try {
       await updateApiData(
@@ -387,7 +402,18 @@ const Lawyers = () => {
                   />
                 </div>
               </div>
+            
               <div className="flex flex-wrap gap-5  mt-10">
+              <div>
+                        <label>Category</label>
+                        <br />
+          <select name="" id=""  className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={categoryId} onChange={(e)=> setCategoryId(e.target.value)}>
+                {category?.map((d, i)=>(
+                    <option value={d?._id}>{d?.name}</option>
+
+                ))}
+              </select>
+          </div>
                 <div>
                   <label>Bar registration Number</label>
                   <br />
@@ -677,6 +703,16 @@ const Lawyers = () => {
                             className="block w-[250px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           />
                         </div>
+                        <div>
+                        <label>Category</label>
+                        <br />
+          <select name="" id=""  className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={categoryId} onChange={(e)=> setCategoryId(e.target.value)}>
+                {category?.map((d, i)=>(
+                    <option value={d?._id}>{d?.name}</option>
+
+                ))}
+              </select>
+          </div>
                         <div>
                           <label>Bar registration Number</label>
                           <br />
