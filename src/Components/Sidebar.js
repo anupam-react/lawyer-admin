@@ -61,13 +61,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Notification</span>
           </li>
         </Link>
-        <Link to="/meeting">
+        {/* <Link to="/meeting">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={meeting} alt="" className="logo"/>
 
             <span className="text-white ml-2 font-semibold">Meeting</span>
           </li>
-        </Link>
+        </Link> */}
         <Link to="/Booking">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={booking} alt="" className="logo"/>
@@ -75,13 +75,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Booking</span>
           </li>
         </Link>
-        <Link to="/services">
+        {/* <Link to="/services">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={services} alt="" className="logo" />
 
             <span className="text-white ml-2 font-semibold">Services</span>
           </li>
-        </Link>
+        </Link> */}
         <Link to="/city">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={services} alt="" className="logo" />
@@ -152,13 +152,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Permissions</span>
           </li>
         </Link>
-        <Link to="messages">
+        {/* <Link to="messages">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
             <img src={message} alt="" className="logo"/>
 
             <span className="text-white ml-2 font-semibold">Messages</span>
           </li>
-        </Link>
+        </Link> */}
       </ul>
     </div>
   );
