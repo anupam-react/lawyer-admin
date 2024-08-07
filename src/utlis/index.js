@@ -120,3 +120,14 @@ export function currentDate(dateString) {
   
     return `${hours}.${minutes} ${amOrPm}. ${day} ${month}, ${year}, `;
   }
+
+  export function getDateFromISOString(dateString) {
+    const date = new Date(dateString);
+  
+    // Get year, month, and day
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero-based
+    const day = ("0" + date.getDate()).slice(-2);
+  
+    return `${day}/${month}/${year}`;
+  }

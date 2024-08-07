@@ -4,7 +4,7 @@ import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import config, { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
-import { fetchApiData } from "../utlis";
+import { fetchApiData, getDateFromISOString } from "../utlis";
 
 const Booking = () => {
   const [selectedDiv, setSelectedDiv] = useState("Upcoming");
@@ -95,11 +95,15 @@ const Booking = () => {
                       Advocate Name
                     </th>
                     <th className="w-[150px] text-center text-[#0F2C64]">
-                      Languages
+                      Appointment Type
+                    </th>
+                    <th className="w-[150px] text-center text-[#0F2C64]">
+                      Appointment Date
                     </th>
                     <th className=" w-[100px] text-center text-[#0F2C64]">
                       Time
                     </th>
+                   
                     <th className=" w-[100px] text-center text-[#0F2C64]">
                       Location
                     </th>
@@ -127,9 +131,12 @@ const Booking = () => {
                       </td>
 
                       <td className="text-center">
-                        {item.userId?.languageKnow}
+                        {item.appointmentType}
                       </td>
-                      <td className="text-center">Time {item?.appointmentTime}</td>
+                      <td className="text-center">
+                        {getDateFromISOString(item.appointmentDate)}
+                      </td>
+                      <td className="text-center">{item?.appointmentTime}</td>
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
@@ -158,7 +165,10 @@ const Booking = () => {
                       Advocate Name
                     </th>
                     <th className="w-[150px] text-center text-[#0F2C64]">
-                      Languages
+                      Appointment Type
+                    </th>
+                    <th className="w-[150px] text-center text-[#0F2C64]">
+                      Appointment Date
                     </th>
                     <th className=" w-[100px] text-center text-[#0F2C64]">
                       Time
@@ -189,8 +199,13 @@ const Booking = () => {
                       {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
                       </td>
 
-                      <td className="text-center"> {item.userId?.languageKnow}</td>
-                      <td className="text-center">Time  {item?.appointmentTime}</td>
+                      <td className="text-center">
+                        {item.appointmentType}
+                      </td>
+                      <td className="text-center">
+                        {getDateFromISOString(item.appointmentDate)}
+                      </td>
+                      <td className="text-center">{item?.appointmentTime}</td>
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>
@@ -218,9 +233,9 @@ const Booking = () => {
                     <th className="text-center text-[#0F2C64] w-[150px]">
                       Advocate Name
                     </th>
-                    <th className="w-[150px] text-center text-[#0F2C64]">
+                    {/* <th className="w-[150px] text-center text-[#0F2C64]">
                       Languages
-                    </th>
+                    </th> */}
                     <th className=" w-[100px] text-center text-[#0F2C64]">
                       Time
                     </th>
@@ -250,8 +265,8 @@ const Booking = () => {
                       {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
                       </td>
 
-                      <td className="text-center">{item.userId?.languageKnow}</td>
-                      <td className="text-center">Time {item?.appointmentTime}</td>
+                      {/* <td className="text-center">{item.userId?.languageKnow}</td> */}
+                      <td className="text-center">{item?.appointmentTime}</td>
                       <td className="w-[50px] text-center">
                         {item.userId?.state}
                       </td>

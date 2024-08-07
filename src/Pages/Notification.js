@@ -7,7 +7,7 @@ import { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
-import { createApiData, deleteApiData, fetchApiData } from "../utlis";
+import { createApiData, deleteApiData, fetchApiData, getDateFromISOString } from "../utlis";
 
 const Notification = () => {
   const [data, setData] = useState("");
@@ -270,7 +270,7 @@ const Notification = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.data?.map((item) => (
+                {data?.map((item) => (
                   <tr className="" key={item._id}>
                     <td className="text-center p-5 border border-slate-300 ...">
                       <input
@@ -289,7 +289,7 @@ const Notification = () => {
                     <td className="w-[50px] text-center border border-slate-300 ..."></td>
 
                     <td className="w-[50px] text-center border border-slate-300 ...">
-                      {item.createdAt}
+                      {getDateFromISOString(item.createdAt)}
                     </td>
                     <td className="w-[50px] text-center border border-slate-300 ...">
                       <span className="flex gap-1 justify-center">
