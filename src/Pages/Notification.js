@@ -270,7 +270,7 @@ const Notification = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.map((item) => (
+                {!!data?.length && data?.map((item) => (
                   <tr className="" key={item._id}>
                     <td className="text-center p-5 border border-slate-300 ...">
                       <input

@@ -408,7 +408,7 @@ const Dashboard = () => {
                         onClick={() => setaddserveice(item?._id)}
                       className="bg-[#0F2C64] cursor-pointer p-1 pl-5 pr-5 rounded text-white flex justify-center items-center gap-2"
                     >
-                      Approve
+                    { item?.Status === "PAID" ? "Complete" : "Approve"}
                     </button>
                           }
                         </td>
