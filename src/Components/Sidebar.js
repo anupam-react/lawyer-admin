@@ -89,6 +89,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">City</span>
           </li>
         </Link>
+        <Link to="/language">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Language</span>
+          </li>
+        </Link>
         <Link to="/casemanager">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={services} alt="" className="logo" />

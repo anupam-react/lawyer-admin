@@ -31,6 +31,7 @@ import BlogCategory from "./Pages/BlogCategory";
 import Blog from "./Pages/Blog";
 import WhyUserLove from "./Pages/WhyUserLove";
 import TrustBy from "./Pages/TrustBy";
+import Language from "./Pages/Language";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
       { path: "/Booking", element: <PrivateRoute element={<Booking />} /> },
       { path: "/services", element: <PrivateRoute element={<Services />} /> },
       { path: "/city", element: <PrivateRoute element={<City />} /> },
+      { path: "/language", element: <PrivateRoute element={<Language />} /> },
       { path: "/casemanager", element: <PrivateRoute element={<CaseManager />} /> },
       { path: "/banners", element: <PrivateRoute element={<Banners />} /> },
       { path: "/blog-category", element: <PrivateRoute element={<BlogCategory />} /> },
