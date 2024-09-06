@@ -158,7 +158,7 @@ const BlogCategory = () => {
                 <form onSubmit={handlecreateservice}>
                   <div className=" justify-center flex">
                     <div>
-                      <label>City Name</label>
+                      <label>Blog Category Name</label>
                       <br />
                       <input
                         value={name}
@@ -241,7 +241,7 @@ const BlogCategory = () => {
                 <div >
                   <div className=" justify-center flex">
                     <div>
-                      <label>City Name</label>
+                      <label>Blog Category Name</label>
                       <br />
                       <input
                         value={name || singleServices?.title}

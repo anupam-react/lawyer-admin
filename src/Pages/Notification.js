@@ -56,6 +56,7 @@ const Notification = () => {
         formData
       );
       alert("Data added successfully");
+      fetchNotification()
     } catch (error) {
       console.error("Error adding data:", error);
     }
