@@ -29,8 +29,8 @@ const Dashboard = () => {
 
   ///////fecting Transaction///////
  async function fetchtransaction() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/user/allTransaction`)
-    setTransaction(data?.data?.reverse());
+    const data = await fetchApiData(`${Baseurl}/api/v1/user/allTransaction?page=1&limit=10000`)
+    setTransaction(data?.data);
    
   }
 
