@@ -167,6 +167,7 @@ const Lawyers = () => {
       );
       alert("Data added successfully");
       setaddnewlawyer(false);
+      fetchLawyer()
     } catch (error) {
       console.error("Error adding data:", error);
     }
