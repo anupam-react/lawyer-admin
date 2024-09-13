@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import bellicon from "../Assets/Banners/bellicon.svg";
 import deletebtn from "../Assets/Banners/deletebtn.svg";
 import editbtn from "../Assets/Banners/editbtn.svg";
 import upload from "../Assets/upload.svg";
 import goback from "../Assets/goback.svg";
-import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
-import { headers } from "../utlis/config";
-import { Navigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Spinner from "../utlis/Spinner";
 import { createApiData, deleteApiData, fetchApiData, updateApiData } from "../utlis";
 const Blog = () => {
@@ -25,6 +22,8 @@ const Blog = () => {
   const [isDelete , setDelete] = useState(false)
 
   const [editItemId, setEditItemId] = useState(null);
+
+  const navigate = useNavigate()
 
   /////////fetch banner ///////////
   async function fetchbanner() {
@@ -358,6 +357,16 @@ const Blog = () => {
                   <div className="flex justify-between items-center pt-5 ml-5 mr-5">
                     <div className="text-2xl mb-5 text-[black] font-semibold ">
                     Blog
+                    </div>
+                    <div className="flex">
+                      <div className="flex justify-center items-center gap-5">
+                        <button
+                          className="bg-[#0F2C64] p-2 pl-5 pr-5 rounded-3xl text-white"
+                          onClick={() => navigate('/blog-category')}
+                        >
+                          Blog Category
+                        </button>
+                      </div>
                     </div>
                     <div className="flex">
                       <div className="flex justify-center items-center gap-5">

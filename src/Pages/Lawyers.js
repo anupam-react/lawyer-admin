@@ -18,6 +18,7 @@ import {
   createApiData,
   deleteApiData,
   fetchApiData,
+  getDateFromISOString,
   updateApiData,
 } from "../utlis";
 // import { headers } from "../utlis/config";
@@ -893,11 +894,14 @@ const Lawyers = () => {
                     <th className=" w-[200px] text-center text-[#6D6D6D]">
                       Total Consultations
                     </th>
+                    <th className=" w-[200px] text-center text-[#6D6D6D]">
+                      Date
+                    </th>
 
                     <th className="w-[200px] text-center text-[#6D6D6D]">
                       Status
                     </th>
-                    <th></th>
+                    <th className="w-[200px] text-center text-[#6D6D6D]"></th>
                   </tr>
                 </thead>
                 <tbody className="">
@@ -928,6 +932,9 @@ const Lawyers = () => {
                         <td className="w-[150px] text-left">{item.phone}</td>
                         <td className="w-[50px] text-center">
                           {item.totalConsultancy}
+                        </td>
+                        <td className="w-[50px] text-center">
+                          {getDateFromISOString(item.createdAt)}
                         </td>
                         <td className=" text-center ">
                           <span

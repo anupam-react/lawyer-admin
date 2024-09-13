@@ -32,6 +32,7 @@ import Blog from "./Pages/Blog";
 import WhyUserLove from "./Pages/WhyUserLove";
 import TrustBy from "./Pages/TrustBy";
 import Language from "./Pages/Language";
+import Terms from "./Pages/Terms";
 
 const router = createBrowserRouter([
   {
@@ -96,6 +97,7 @@ const router = createBrowserRouter([
       { path: "/Messages", element: <PrivateRoute element={<Messages />} /> },
       { path: "/Complaint", element: <PrivateRoute element={<Complaint />} /> },
       { path: "/privacy", element: <PrivateRoute element={<Privacy />} /> },
+      { path: "/terms", element: <PrivateRoute element={<Terms />} /> },
       { path: "/History", element: <PrivateRoute element={<History />} /> },
     ],
   },

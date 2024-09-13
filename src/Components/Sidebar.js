@@ -4,14 +4,13 @@ import totaluser from "../Assets/Sidebar/totaluser.svg";
 import cases from "../Assets/cases.svg";
 import department from "../Assets/department.svg";
 import notification from "../Assets/notification.svg";
-import meeting from "../Assets/meeting.svg";
 import booking from "../Assets/booking.svg";
 import services from "../Assets/services.svg";
 import banner from "../Assets/banners.svg";
 import allfiles from "../Assets/allfiles.svg";
-import todolist from "../Assets/todolist.svg";
 import permission from "../Assets/permission.svg";
 import message from "../Assets/message.svg";
+import complaint from "../Assets/Header/complaint.svg";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -51,7 +50,7 @@ const Sidebar = () => {
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={department} alt="" className="logo" />
 
-            <span className="text-white ml-2 font-semibold">Department</span>
+            <span className="text-white ml-2 font-semibold">Field Of Practices</span>
           </li>
         </Link>
         <Link to="/notification">
@@ -110,13 +109,7 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Banners</span>
           </li>
         </Link>
-        <Link to="/blog-category">
-          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
-            <img src={banner} alt="" className="logo"/>
 
-            <span className="text-white ml-2 font-semibold">Blog Category</span>
-          </li>
-        </Link>
         <Link to="/blog">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={banner} alt="" className="logo"/>
@@ -145,13 +138,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">All Files</span>
           </li>
         </Link>
-        <Link to="todolist">
+        {/* <Link to="todolist">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
             <img src={todolist} alt="" className="logo"/>
 
             <span className="text-white ml-2 font-semibold">To-Do List</span>
           </li>
-        </Link>
+        </Link> */}
         <Link to="permissions">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer  hover:bg-[#1e3a8a]">
             <img src={permission} alt="" className="logo"/>
@@ -159,13 +152,13 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Permissions</span>
           </li>
         </Link>
-        {/* <Link to="messages">
+        <Link to="/Complaint">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
-            <img src={message} alt="" className="logo"/>
+            <img src={complaint} alt="" className="logo"/>
 
-            <span className="text-white ml-2 font-semibold">Messages</span>
+            <span className="text-white ml-2 font-semibold">Complaints</span>
           </li>
-        </Link> */}
+        </Link>
       </ul>
     </div>
   );

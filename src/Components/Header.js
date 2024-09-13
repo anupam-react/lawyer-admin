@@ -235,20 +235,17 @@ const Header = () => {
                           Privacy Policy
                         </li>
                         </Link>
+                        <Link to="/terms">
                         <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-1">
                           <img src={term} alt="" />
                           Terms & Conditinos
                         </li>
+                        </Link>
                         <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2">
                           <img src={helpandsupport} alt="" />
                           Help & Support
                         </li>
-                        <Link to="/Complaint">
-                          <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2">
-                            <img src={complaint} alt="" />
-                            Complaints
-                          </li>
-                        </Link>
+                       
                         <li
                           className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2"
                           onClick={handleLogout}

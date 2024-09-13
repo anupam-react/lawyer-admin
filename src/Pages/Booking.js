@@ -89,7 +89,7 @@ const Booking = () => {
                 <thead>
                   <tr>
                     <th className="w-[150px] text-left text-[#0F2C64]">
-                      Consulted Name
+                    Client Name
                     </th>
                     <th className="text-center text-[#0F2C64] w-[150px]">
                       Advocate Name
@@ -118,16 +118,16 @@ const Booking = () => {
                   {!!upcomingdata?.length && upcomingdata?.map((item) => (
                     <tr
                       className="border-t-2 border-b-2 m-5 h-[80px]"
-                      key={item._Id}
+                      key={item._id}
                     >
                       <td className="text-left">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
-                        {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
+                        {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName + " " + "(" + item?.lawyer?.Id + ")"}
                       </td>
 
                       <td className="text-center">
@@ -159,7 +159,7 @@ const Booking = () => {
                 <thead>
                   <tr>
                     <th className="w-[150px] text-left text-[#0F2C64]">
-                      Consulted Name
+                      Client Name
                     </th>
                     <th className="text-center text-[#0F2C64] w-[150px]">
                       Advocate Name
@@ -189,14 +189,14 @@ const Booking = () => {
                       className="border-t-2 border-b-2 m-5 h-[80px]"
                       key={item._Id}
                     >
-                      <td className="text-left">
+                      <td className="text-left w-[250px]">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
-                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
+                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName + " " + "(" + item?.lawyer?.Id + ")"}
                       </td>
 
                       <td className="text-center">
@@ -228,7 +228,7 @@ const Booking = () => {
                 <thead>
                   <tr>
                     <th className="w-[150px] text-left text-[#0F2C64]">
-                      Consulted Name
+                      Client Name
                     </th>
                     <th className="text-center text-[#0F2C64] w-[150px]">
                       Advocate Name
@@ -258,11 +258,11 @@ const Booking = () => {
                       <td className="text-left">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full"  />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
-                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName}
+                      {item.lawyer?.fullName || item?.lawyer?.firstName + " " + item?.lawyer?.lastName + " " + "(" + item?.lawyer?.Id + ")"}
                       </td>
 
                       {/* <td className="text-center">{item.userId?.languageKnow}</td> */}

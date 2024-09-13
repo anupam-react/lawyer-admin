@@ -407,13 +407,16 @@ const Totalusers = () => {
                     <th className=" w-[200px] text-center text-[#6D6D6D]">
                       Total Consultations
                     </th>
+                    <th className=" w-[200px] text-center text-[#6D6D6D]">
+                    Status
+                    </th>
 
                     <th className="w-[100px]"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {!!data?.length && currentItems?.map((item) => (
-                    <tr className="shadow-lg bg-[white] h-[80px] border-b">
+                  {!!data?.length && currentItems?.map((item ,i) => (
+                    <tr key={i} className="shadow-lg bg-[white] h-[80px] border-b">
                       {/* <td className="text-left">
                         <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                           New
@@ -437,6 +440,9 @@ const Totalusers = () => {
                       <td className="w-[150px] text-left">{item.phone}</td>
                       <td className="w-[50px] text-center">
                         {item.totalConsultancy}
+                      </td>
+                      <td className="w-[50px] text-center">
+                        {item.status}
                       </td>
 
                       <td className="w-[50px] text-center text-[#094DB3]">

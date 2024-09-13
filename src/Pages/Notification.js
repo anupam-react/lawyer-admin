@@ -7,7 +7,12 @@ import { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import Spinner from "../utlis/Spinner";
 import { useNavigate } from "react-router-dom";
-import { createApiData, deleteApiData, fetchApiData, getDateFromISOString } from "../utlis";
+import {
+  createApiData,
+  deleteApiData,
+  fetchApiData,
+  getDateFromISOString,
+} from "../utlis";
 
 const Notification = () => {
   const [data, setData] = useState("");
@@ -16,21 +21,18 @@ const Notification = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
 
-  const [userType, setUserType] = useState("ALL");
+  const [userType, setUserType] = useState("All");
   const [selectedNotification, setSelectedNotification] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [isSelect , setSelect] = useState(true)
-  const [isDelete , setDelete] = useState(false)
+  const [isSelect, setSelect] = useState(true);
+  const [isDelete, setDelete] = useState(false);
   const navigate = useNavigate();
   console.log(selectedItemId);
   ///////////fetch notification////////////
- async function fetchNotification() {
-  const data = await fetchApiData( `${Baseurl}/api/v1/admin/notifications`);
-  console.log(data);
-  setData(data?.data);
-
-   
-  
+  async function fetchNotification() {
+    const data = await fetchApiData(`${Baseurl}/api/v1/admin/notifications`);
+    console.log(data);
+    setData(data?.data);
   }
   useEffect(() => {
     fetchNotification();
@@ -40,28 +42,27 @@ const Notification = () => {
   }, []);
 
   //////////create Notification/////////
-  const handleCreateNotification = async(e) => {
+  const handleCreateNotification = async (e) => {
     e.preventDefault();
     console.log(title, message);
     const formData = {
       title: title,
       message: message,
       userType: userType,
-      isEnable: isSelect
+      isEnable: isSelect,
     };
 
     try {
-      await createApiData(
-      `${Baseurl}/api/v1/admin/notifications`,
-        formData
-      );
+      await createApiData(`${Baseurl}/api/v1/admin/notifications`, formData);
       alert("Data added successfully");
-      fetchNotification()
+      setTitle("")
+      setMessage("")
+      setUserType("All")
+      setSelect(true)
+      fetchNotification();
     } catch (error) {
       console.error("Error adding data:", error);
     }
-  
-   
   };
 
   ///////////// Enable or Disable Notification /////////////
@@ -90,17 +91,13 @@ const Notification = () => {
   /////////////////Delete Notification///////////
 
   async function handledelete(_id) {
-
     try {
       await deleteApiData(`${Baseurl}/api/v1/admin/notifications/${_id}`);
-      setDelete(false)
-      fetchNotification()
-
+      setDelete(false);
+      fetchNotification();
     } catch (err) {
       console.log(err);
     }
-   
-  
   }
 
   // Function to handle checkbox toggle
@@ -139,37 +136,40 @@ const Notification = () => {
                   onClick={() => setDelete(true)}
                 />
               </div>
-              {isDelete &&
-                          <>
-                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
-                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
-                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
-                                  <div className="text-center font-semibold text-[20px]">
-                                    Confirm Delete Notification ?
-                                  </div>
-                                  <hr className="my-6" />
+              {isDelete && (
+                <>
+                  <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                    <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                      <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                        <div className="text-center font-semibold text-[20px]">
+                          Confirm Delete Notification ?
+                        </div>
+                        <hr className="my-6" />
 
-                                  <div className="flex justify-center mt-5">
-                                    <button onClick={(e)=>handledelete(selectedNotification)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
-                                      Yes
-                                    </button>
-                                    <button
-                                      onClick={() => setDelete(false)}
-                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
-                                    >
-                                      Not Now
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
-                          </>
-}
+                        <div className="flex justify-center mt-5">
+                          <button
+                            onClick={(e) => handledelete(selectedNotification)}
+                            className="w-[120px] h-[40px]  text-black font-bold rounded-lg"
+                          >
+                            Yes
+                          </button>
+                          <button
+                            onClick={() => setDelete(false)}
+                            className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                          >
+                            Not Now
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                </>
+              )}
             </div>
           </div>
           <hr />
-          <div >
+          <div>
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-black font-semibold">
@@ -185,27 +185,31 @@ const Notification = () => {
 
               <div className="flex items-center gap-2">
                 <span className="text-black font-semibold">
-                  Notification Status
+                  Push Notification
                 </span>
                 <button
-                  onClick={() =>
-                   { 
+                  onClick={() => {
                     // handleEnableDisableNotification(selectedItemId, true)
-                    setSelect(true)
+                    setSelect(true);
+                  }}
+                  className={
+                    isSelect
+                      ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2"
+                      : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center items-center gap-2 border border-[#0F2C64]"
                   }
-                  }
-                  className={isSelect ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2" : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center items-center gap-2 border border-[#0F2C64]"}
                 >
                   Enable
                 </button>
                 <button
-                  onClick={() =>
-                    { 
-                      // handleEnableDisableNotification(selectedItemId, false)
-                      setSelect(false)
-                    }
+                  onClick={() => {
+                    // handleEnableDisableNotification(selectedItemId, false)
+                    setSelect(false);
+                  }}
+                  className={
+                    !isSelect
+                      ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2"
+                      : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center border border-[#0F2C64] items-center gap-2"
                   }
-                  className={!isSelect ? "bg-[#0F2C64] p-1 pl-10 pr-10 rounded text-white flex justify-center items-center gap-2" : "bg-white p-1 pl-10 pr-10 rounded text-[#0F2C64] flex justify-center border border-[#0F2C64] items-center gap-2"}
                 >
                   Disable
                 </button>
@@ -227,7 +231,7 @@ const Notification = () => {
                     Cancel
                   </button>
                   <button
-                   onClick={handleCreateNotification}
+                    onClick={handleCreateNotification}
                     className="bg-[#0F2C64]  p-2 pl-3 pr-3 rounded text-white flex justify-center items-center gap-2"
                   >
                     Save
@@ -235,11 +239,17 @@ const Notification = () => {
                 </div>
               </div>
               <div>
-                <div className="text-black font-semibold">Date Added</div>
-                <input
+                <div className="text-black font-semibold">User Type</div>
+                <select
                   type="date"
+                  onChange={(e) => setUserType(e.target.value)}
+                  value={userType}
                   className="w-[150px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+                >
+                  <option value="All">All</option>
+                  <option value="CUSTOMER">Client</option>
+                  <option value="LAWYER">Lawyer</option>
+                </select>
               </div>
             </div>
           </div>
@@ -271,35 +281,38 @@ const Notification = () => {
                 </tr>
               </thead>
               <tbody>
-                {!!data?.length && data?.map((item) => (
-                  <tr className="" key={item._id}>
-                    <td className="text-center p-5 border border-slate-300 ...">
-                      <input
-                        type="checkbox"
-                        onChange={() => handleCheckboxChange(item._id, item.id)}
-                        checked={selectedNotification.includes(item._id)}
-                      />
-                    </td>
-                    <td className="w-[200px] text-center border border-slate-300 ...">
-                      {item.title}
-                    </td>
-                    <td className="w-[200px] text-center border border-slate-300 ...">
-                      {item.message}
-                    </td>
+                {!!data?.length &&
+                  data?.map((item) => (
+                    <tr className="" key={item._id}>
+                      <td className="text-center p-5 border border-slate-300 ...">
+                        <input
+                          type="checkbox"
+                          onChange={() =>
+                            handleCheckboxChange(item._id, item.id)
+                          }
+                          checked={selectedNotification.includes(item._id)}
+                        />
+                      </td>
+                      <td className="w-[200px] text-center border border-slate-300 ...">
+                        {item.title}
+                      </td>
+                      <td className="w-[200px] text-center border border-slate-300 ...">
+                        {item.message}
+                      </td>
 
-                    <td className="w-[50px] text-center border border-slate-300 ..."></td>
+                      <td className="w-[50px] text-center border border-slate-300 ..."></td>
 
-                    <td className="w-[50px] text-center border border-slate-300 ...">
-                      {getDateFromISOString(item.createdAt)}
-                    </td>
-                    <td className="w-[50px] text-center border border-slate-300 ...">
-                      <span className="flex gap-1 justify-center">
-                        <img src={bell} alt="" />
-                        {/* <img src={editicon} alt="" /> */}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="w-[50px] text-center border border-slate-300 ...">
+                        {getDateFromISOString(item.createdAt)}
+                      </td>
+                      <td className="w-[50px] text-center border border-slate-300 ...">
+                        <span className="flex gap-1 justify-center">
+                          <img src={bell} alt="" />
+                          <img src={editicon} alt="" className="cursor-pointer"/>
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

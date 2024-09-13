@@ -6,7 +6,6 @@ import userimage from "..//Assets/userimage.svg";
 import upload from "../Assets/upload.svg";
 import goback from "../Assets/goback.svg";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
 import { useNavigate } from "react-router-dom";
 import { headers } from "../utlis/config";
@@ -625,37 +624,7 @@ const Cases = () => {
                     >
                       All Cases
                     </div>
-                    <div
-                      className={`cursor-pointer ${
-                        selectedDiv === "Old Cases"
-                          ? "underline font-bold text-[#0F2C64] underline-offset-8"
-                          : "font-bold text-[#868686]"
-                      }`}
-                      onClick={() => setSelectedDiv("Old Cases")}
-                    >
-                      Old Cases
-                    </div>
-                    <div
-                      className={`cursor-pointer ${
-                        selectedDiv === "New Cases"
-                          ? "underline font-bold text-[#0F2C64] underline-offset-8"
-                          : "font-bold text-[#868686]"
-                      }`}
-                      onClick={() => setSelectedDiv("New Cases")}
-                    >
-                      New Cases
-                    </div>
-
-                    <div
-                      className={`cursor-pointer ${
-                        selectedDiv === "Judgement Cases"
-                          ? "underline text-[#0F2C64] font-bold underline-offset-8"
-                          : "font-bold text-[#868686]"
-                      }`}
-                      onClick={() => setSelectedDiv("Judgement Cases")}
-                    >
-                     Judgement Cases
-                    </div>
+                   
                     <div
                       className={`cursor-pointer ${
                         selectedDiv === "Closed Cases"

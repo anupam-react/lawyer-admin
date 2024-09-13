@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
+import deletebtn from "../Assets/dltbtn.svg";
+import { FaSearch } from "react-icons/fa";
 import edit from "../Assets/edit.svg";
+import upload from "../Assets/upload.svg";
+import property from "../Assets/department/property.svg";
+import corporate from "../Assets/department/corporate.svg";
+import civil from "../Assets/department/civil.svg";
+import criminal from "../Assets/department/criminal.svg";
 import { X } from "lucide-react";
+import config, { headers } from "../utlis/config";
 import { Baseurl } from "../utlis/apiservices";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
+  createApiData,
+  deleteApiData,
   fetchApiData,
   updateApiData,
 } from "../utlis";
 
-const Privacy = () => {
+const Terms = () => {
   const [addservice, setaddserveice] = useState(false);
   const [editservice, setEditService] = useState(false);
+
   const [singleServices, setSingleServices] = useState();
   const [content, setContent] = useState("");
-
   const [editItemId, setEditItemId] = useState(null);
   const navigate = useNavigate();
 
   /////fetch service//////////
 
   async function fetchservice() {
-    const data = await fetchApiData(`${Baseurl}/api/v1/privacy/all`);
-    setSingleServices(data);
+    const data = await fetchApiData(`${Baseurl}/api/v1/Term/all`);
+    setSingleServices(data?.data);
   }
 
   useEffect(() => {
@@ -53,7 +63,7 @@ const Privacy = () => {
     console.log(editItemId);
 
     try {
-      await updateApiData(`${Baseurl}/api/v1/privacy/update/${singleServices?._id}`, {
+      await updateApiData(`${Baseurl}/api/v1/Term/update/${singleServices?._id}`, {
         content: content,
       });
       alert("Data Edited successfully");
@@ -72,7 +82,7 @@ const Privacy = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Create Policy
+                    Create Manager
                     <br />
                     <span className="text-[15px] text-[#525252]">
                       Customize and add Policy
@@ -128,10 +138,10 @@ const Privacy = () => {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[600px] bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 rounded-t">
                   <h3 className="text-xl font-semibold">
-                    Edit Policy
+                    Edit Terms And Conditions
                     <br />
                     <span className="text-[15px] text-[#525252]">
-                      Customize and change Policy
+                      Customize and change Terms And Conditions
                     </span>
                   </h3>
 
@@ -150,7 +160,7 @@ const Privacy = () => {
                       <textarea
                         value={content || singleServices?.content}
                         onChange={(e) => setContent(e.target.value)}
-                        placeholder="Update Policy Content"
+                        placeholder="Update Terms And Conditions Content"
                         className="placeholder: block w-[533px] h-40 rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
@@ -202,7 +212,7 @@ const Privacy = () => {
           </div>
         </div>
         <div className="bg-[#0F2C64] text-center py-8">
-          <p className="text-white text-[40px]">Privacy Policy</p>
+          <p className="text-white text-[40px]">Terms And Conditions</p>
           <p className="text-white">{singleServices?.content}</p>
         </div>
       </div>
@@ -210,4 +220,4 @@ const Privacy = () => {
   );
 };
 
-export default Privacy;
+export default Terms;
