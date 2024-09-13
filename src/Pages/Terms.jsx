@@ -96,7 +96,7 @@ const Terms = () => {
                     <X />
                   </span>
                 </div>
-                <form onSubmit={handlecreateservice}>
+                <form >
                   <div className=" justify-center flex mt-4">
                     <div>
                       <label>Content</label>
