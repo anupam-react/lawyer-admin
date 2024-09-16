@@ -15,8 +15,9 @@ const Permissions = () => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [permission, setPermission] = useState([]);
-  const [status, setStatus] = useState("Active");
+  const [status, setStatus] = useState("");
 
   const [editItemId, setEditItemId] = useState(null);
 
@@ -34,15 +35,16 @@ const Permissions = () => {
   const handleCreatePermission = async(e) => {
     e.preventDefault();
     console.log(fullName, phone, email, status, permission);
-    const permissionString = JSON.stringify(permission);
+   
 
     const formData = {
       fullName: fullName,
       phone: phone,
       email: email,
-      permission: permissionString,
+      password: password,
       status: status,
     };
+    formData.permission = permission?.map((d,i)=>(d))
 
     try {
       await createApiData(
@@ -51,6 +53,12 @@ const Permissions = () => {
       );
       alert("Data added successfully");
       setceatepermission(false);
+      setPermission([])
+      setFullName("")
+      setPhone("")
+      setEmail("")
+      setPassword("")
+      setStatus("")
       fetchPermissions()
     } catch (error) {
       console.error("Error adding data:", error);
@@ -74,16 +82,14 @@ const Permissions = () => {
   //////////edit Lawyer/////////
   const handleEditPermission = async(e) => {
     e.preventDefault();
-
-    const permissionString = JSON.stringify(permission);
-    console.log(permissionString);
     const formData = {
-      email: email,
-      phone: phone,
-      fullName: fullName,
-      permission: permissionString,
-      status: status,
     };
+    if(email) formData.email = email;
+    if(phone) formData.phone = phone;
+    if(fullName) formData.fullName = fullName;
+    if(password) formData.password = password;
+    // if(status) formData.status = status;
+    if(permission?.length) formData.permission = permission?.map((d,i)=>(d))
 
     try {
       await updateApiPatch(
@@ -92,6 +98,12 @@ const Permissions = () => {
       );
       alert("Data Edited Successfully");
       seteditpermission(false);
+      setFullName("")
+      setPhone("")
+      setEmail("")
+      setPassword("")
+      setStatus("")
+      setPermission([])
       fetchPermissions()
     } catch (error) {
       console.error("Error editing data:", error);
@@ -170,6 +182,18 @@ const Permissions = () => {
                       className="placeholder: block w-[350px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
+                  <div>
+                    <label className="text-[#0F2C64] font-semibold">
+                      Password
+                    </label>
+                    <br />
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Password"
+                      className="placeholder: block w-[350px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center mt-10">
                   <div className="w-[120px] text-[#0F2C64] font-semibold">
@@ -178,48 +202,49 @@ const Permissions = () => {
                   <hr className=" border-gray-400 w-full" />
                 </div>
                 <div className="flex justify-between mt-5">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        value="Lawyer Profile & Total users"
-                        onChange={handleCheckboxChange}
-                      />{" "}
-                      Lawyer Profile & Total users
+                <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="checkbox"
+                          value="dashboard"
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                       Dashboard
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="checkbox"
+                          value="notification"
+                          onChange={handleCheckboxChange}
+                        />
+                       Notification
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="checkbox"
+                          value="city"
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        City & language & casemanager
+                      </div>
+                   
+                      <div className="flex gap-2">
+                        <input
+                          type="checkbox"
+                          value="banners"
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        Banners & blog & user love & trustby
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="checkbox"
+                          value="files"
+                          onChange={handleCheckboxChange}
+                        />{" "}
+                        All files  & Complaint
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        value="Meetings, Messages, Cases & Bookings"
-                        onChange={handleCheckboxChange}
-                      />
-                      Meetings, Messages, Cases & Bookings
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        value="Services, Departments"
-                        onChange={handleCheckboxChange}
-                      />{" "}
-                      Services, Departments
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        value="Banners"
-                        onChange={handleCheckboxChange}
-                      />{" "}
-                      Banners
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        value="All files / Categories"
-                        onChange={handleCheckboxChange}
-                      />{" "}
-                      All files / Categories
-                    </div>
-                  </div>
                   <div>
                     <select
                       value={status}
@@ -319,6 +344,18 @@ const Permissions = () => {
                         className="placeholder: block w-[350px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       />
                     </div>
+                    <div>
+                    <label className="text-[#0F2C64] font-semibold">
+                      Password
+                    </label>
+                    <br />
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Password"
+                      className="placeholder: block w-[350px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
                   </div>
                   <div className="flex items-center mt-10">
                     <div className="w-[120px] text-[#0F2C64] font-semibold">
@@ -331,42 +368,42 @@ const Permissions = () => {
                       <div className="flex gap-2">
                         <input
                           type="checkbox"
-                          value="Lawyer Profile & Total users"
+                          value="dashboard"
                           onChange={handleCheckboxChange}
                         />{" "}
-                        Lawyer Profile & Total users
+                       Dashboard
                       </div>
                       <div className="flex gap-2">
                         <input
                           type="checkbox"
-                          value="Meetings, Messages, Cases & Bookings"
+                          value="notification"
                           onChange={handleCheckboxChange}
                         />
-                        Meetings, Messages, Cases & Bookings
+                       Notification
                       </div>
                       <div className="flex gap-2">
                         <input
                           type="checkbox"
-                          value="Services, Departments"
+                          value="city"
                           onChange={handleCheckboxChange}
                         />{" "}
-                        Services, Departments
+                        City & language & casemanager
                       </div>
                       <div className="flex gap-2">
                         <input
                           type="checkbox"
-                          value="Banners"
+                          value="banners"
                           onChange={handleCheckboxChange}
                         />{" "}
-                        Banners
+                        Banners & blog & user love & trustby
                       </div>
                       <div className="flex gap-2">
                         <input
                           type="checkbox"
-                          value="All files / Categories"
+                          value="files"
                           onChange={handleCheckboxChange}
                         />{" "}
-                        All files / Categories
+                        All files  & Complaint
                       </div>
                     </div>
                     <div>
@@ -375,6 +412,7 @@ const Permissions = () => {
                         onChange={(e) => setStatus(e.target.value)}
                         className="placeholder: block w-[350px] h-[40px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       >
+                      <option value="">Choose Status</option>
                       <option value="Active">Active</option>
                       <option value="Block">Block</option>
                       <option value="Pending">Pending</option>
@@ -467,7 +505,9 @@ const Permissions = () => {
                         <td className="text-leftborder  ">{item?.email}</td>
 
                         <td className={item.status === "Active" ? "text-[#26A843]" : "text-[#E50606]"}>{item.status}</td>
-                        <td>{item.permission}</td>
+                        <td>{item.permission?.map((d)=>
+                          <span>{d} , </span>
+                          )}</td>
                         <td
                           className="cursor-pointer"
                           onClick={() => {

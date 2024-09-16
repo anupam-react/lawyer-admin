@@ -66,22 +66,19 @@ const Notification = () => {
   };
 
   ///////////// Enable or Disable Notification /////////////
-  const handleEnableDisableNotification = (selectedItemId, enable) => {
+  const handleEnableDisableNotification = (selectedItemId) => {
     const formData = {
-      enabled: enable,
+      isEnable: true,
     };
     axios
       .put(
         `${Baseurl}/api/v1/admin/notifications/IsEnableNotification/${selectedItemId}`,
         formData,
-        {
-          headers: headers,
-        }
       )
       .then((response) => {
-        alert(enable ? "Notification enabled" : "Notification disabled");
-        // fetchNotification();
-        window.location.reload();
+        alert("Notification Enabled");
+        fetchNotification();
+        // window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -300,15 +297,17 @@ const Notification = () => {
                         {item.message}
                       </td>
 
-                      <td className="w-[50px] text-center border border-slate-300 ..."></td>
+                      <td className="w-[50px] text-center border border-slate-300 ...">
+                        {item?.isEnable ? "Active" : "Inactive"}
+                      </td>
 
                       <td className="w-[50px] text-center border border-slate-300 ...">
                         {getDateFromISOString(item.createdAt)}
                       </td>
-                      <td className="w-[50px] text-center border border-slate-300 ...">
-                        <span className="flex gap-1 justify-center">
-                          <img src={bell} alt="" />
-                          <img src={editicon} alt="" className="cursor-pointer"/>
+                      <td className="w-[200px] text-center border border-slate-300 ...">
+                        <span className="flex gap-2 justify-center">
+                          <button onClick={()=>!item?.isEnable ? handleEnableDisableNotification(item.id) : {}} className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg">{item?.isEnable ? "Done" : "Push"}</button>
+                          <img  onClick={()=> navigate(`/notification/${item?._id}`)} src={editicon} alt="" className="cursor-pointer"/>
                         </span>
                       </td>
                     </tr>

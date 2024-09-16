@@ -12,13 +12,29 @@ import permission from "../Assets/permission.svg";
 import message from "../Assets/message.svg";
 import complaint from "../Assets/Header/complaint.svg";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchApiData } from "../utlis";
+import { Baseurl } from "../utlis/apiservices";
 
 const Sidebar = () => {
+  const [userDetails, setUserDetails] = useState();
+  const fetchUser = async () => {
+    const data = await fetchApiData(`${Baseurl}/api/v1/customer/getProfile`);
+    setUserDetails(data?.data);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  console.log(userDetails?.permission)
   return (
-    <div className="bg-[#0F2C64] ">
+    <div className="bg-[#0F2C64] h-full">
       <div className="text-center text-white text-2xl pt-10">Admin</div>
       <ul className="mt-10 items-start">
-        <Link to="/dashboard">
+       {userDetails?.userType === "ADMIN" ?
+       <>
+         <Link to="/dashboard">
           <li className="flex pl-[50px] pt-[12px] pb-[12px] items-left cursor-pointer hover:bg-[#1e3a8a]">
             <img src={dashboard} alt="" className="logo" />
 
@@ -39,18 +55,19 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Total Users</span>
           </li>
         </Link>
-        <Link to="/cases">
-          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
-            <img src={cases} alt="" className="logo"/>
-
-            <span className="text-white ml-2 font-semibold">Cases</span>
-          </li>
-        </Link>
+        
         <Link to="/department">
           <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
             <img src={department} alt="" className="logo" />
 
             <span className="text-white ml-2 font-semibold">Field Of Practices</span>
+          </li>
+        </Link>
+        <Link to="/cases">
+          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={cases} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Cases</span>
           </li>
         </Link>
         <Link to="/notification">
@@ -159,6 +176,155 @@ const Sidebar = () => {
             <span className="text-white ml-2 font-semibold">Complaints</span>
           </li>
         </Link>
+       </>
+       :
+    <>
+      { userDetails?.permission?.includes("dashboard") &&
+      <>
+       <Link to="/dashboard">
+          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-left cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={dashboard} alt="" className="logo" />
+
+            <div className="text-white ml-2 font-semibold">Dashboard</div>
+          </li>
+        </Link>
+        <Link to="/Lawyers">
+          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-left cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={lawyer} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Lawyers</span>
+          </li>
+        </Link>
+        <Link to="/totalusers">
+          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
+            <img src={totaluser} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Total Users</span>
+          </li>
+        </Link>
+        
+        <Link to="/department">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={department} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Field Of Practices</span>
+          </li>
+        </Link>
+        <Link to="/cases">
+          <li className="flex pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={cases} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Cases</span>
+          </li>
+        </Link>
+        <Link to="/Booking">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={booking} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Booking</span>
+          </li>
+        </Link>
+        </>
+        }
+        { userDetails?.permission?.includes("notification") &&
+
+        <Link to="/notification">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={notification} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Notification</span>
+          </li>
+        </Link>
+}
+       
+
+        {/* <Link to="/services">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Services</span>
+          </li>
+        </Link> */}
+         { userDetails?.permission?.includes("city") &&
+         <>
+        <Link to="/city">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">City</span>
+          </li>
+        </Link>
+        <Link to="/language">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Language</span>
+          </li>
+        </Link>
+        <Link to="/casemanager">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={services} alt="" className="logo" />
+
+            <span className="text-white ml-2 font-semibold">Case Manager</span>
+          </li>
+        </Link>
+        </>
+}
+{ userDetails?.permission?.includes("banners") &&
+<>
+
+        <Link to="/banners">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Banners</span>
+          </li>
+        </Link>
+
+        <Link to="/blog">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Blog</span>
+          </li>
+        </Link>
+        <Link to="/whyuserlove">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Why User Love</span>
+          </li>
+        </Link>
+        <Link to="/trustby">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a]">
+            <img src={banner} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Trust By</span>
+          </li>
+        </Link>
+        </>
+}
+{ userDetails?.permission?.includes("files") &&
+<>
+        <Link to="allfiles">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
+            <img src={allfiles} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">All Files</span>
+          </li>
+        </Link>
+    
+        <Link to="/Complaint">
+          <li className="flex  pl-[50px] pt-[12px] pb-[12px] items-center cursor-pointer hover:bg-[#1e3a8a] ">
+            <img src={complaint} alt="" className="logo"/>
+
+            <span className="text-white ml-2 font-semibold">Complaints</span>
+          </li>
+        </Link>
+        </>
+        }
+        </>
+}
       </ul>
     </div>
   );

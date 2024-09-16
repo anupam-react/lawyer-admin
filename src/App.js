@@ -33,6 +33,8 @@ import WhyUserLove from "./Pages/WhyUserLove";
 import TrustBy from "./Pages/TrustBy";
 import Language from "./Pages/Language";
 import Terms from "./Pages/Terms";
+import LawyerVerificaion from "./Pages/LawyerVerificaion";
+import UpdateNotification from "./Pages/UpdateNotification";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +64,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard", element: <PrivateRoute element={<Dashboard />} /> },
       { path: "/Lawyers", element: <PrivateRoute element={<Lawyers />} /> },
+      { path: "/LawyerVerificaion/:id", element: <PrivateRoute element={<LawyerVerificaion />} /> },
       { path: "/profile", element: <PrivateRoute element={<ProfileDatails />} /> },
       {
         path: "/totalusers",
@@ -76,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "/notification",
         element: <PrivateRoute element={<Notification />} />,
+      },
+      {
+        path: "/notification/:id",
+        element: <PrivateRoute element={<UpdateNotification />} />,
       },
       { path: "/meeting", element: <PrivateRoute element={<Meeting />} /> },
       { path: "/Booking", element: <PrivateRoute element={<Booking />} /> },

@@ -5,12 +5,8 @@ import dltbtn from "../Assets/dltbtn.svg";
 import edit from "../Assets/edit.svg";
 import userimage from "..//Assets/userimage.svg";
 import { X } from "lucide-react";
-import axios from "axios";
 import { Baseurl } from "../utlis/apiservices";
-import { Navigate } from "react-router-dom";
-import config, { headers } from "../utlis/config";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../utlis/Spinner";
 import goback from "../Assets/goback.svg";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
@@ -53,22 +49,23 @@ const Lawyers = () => {
   const [itemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(data);
-  const [isDelete , setDelete] = useState(false)
+  const [isDelete, setDelete] = useState(false);
 
-  const [category, setCategory] = useState()
+
+  const [category, setCategory] = useState();
 
   const navigate = useNavigate();
 
   async function fetchCategory() {
-    const data = await fetchApiData('https://shlok-mittal-lawyer-backend.vercel.app/api/v1/category');
+    const data = await fetchApiData(
+      "https://shlok-mittal-lawyer-backend.vercel.app/api/v1/category"
+    );
     setCategory(data?.data);
   }
 
-  useEffect(()=>{
-    fetchCategory()
-  },[])
-
-
+  useEffect(() => {
+    fetchCategory();
+  }, []);
 
   const handleSearch = (event) => {
     const term = event.target.value;
@@ -80,7 +77,7 @@ const Lawyers = () => {
         item?.firstName?.toLowerCase().includes(term.toLowerCase()) ||
         item?.email?.toLowerCase().includes(term.toLowerCase()) ||
         item?.phone?.toLowerCase().includes(term.toLowerCase()) ||
-        item?.country?.toLowerCase().includes(term.toLowerCase())   
+        item?.country?.toLowerCase().includes(term.toLowerCase())
     );
     setSearchResults(results);
   };
@@ -93,10 +90,8 @@ const Lawyers = () => {
   const firstIndex = lastIndex - itemsPerPage;
   // Slice the data array to get the items for the current page
   let currentItems = !searchResults?.length
-  ? data?.slice(firstIndex, lastIndex)
-  : searchResults?.slice(firstIndex, lastIndex);
-
-
+    ? data?.slice(firstIndex, lastIndex)
+    : searchResults?.slice(firstIndex, lastIndex);
 
   // Function to handle next page
   const nextPage = () => {
@@ -126,15 +121,13 @@ const Lawyers = () => {
 
   //////////delete lawyer/////////
   async function handledelete(_id) {
-      try {
-        await deleteApiData(`${Baseurl}/api/v1/admin/User/${_id}`);
-        setDelete(false)
-        fetchLawyer();
-
-      } catch (err) {
-        console.log(err);
-      }
-
+    try {
+      await deleteApiData(`${Baseurl}/api/v1/admin/User/${_id}`);
+      setDelete(false);
+      fetchLawyer();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   //////create lawyer/////////
@@ -168,7 +161,7 @@ const Lawyers = () => {
       );
       alert("Data added successfully");
       setaddnewlawyer(false);
-      fetchLawyer()
+      fetchLawyer();
     } catch (error) {
       console.error("Error adding data:", error);
     }
@@ -273,7 +266,6 @@ const Lawyers = () => {
                 </button>
                 <span className="flex">
                   <img src={dltbtn} alt="" />
-                  <img className="cursor-pointer" src={edit} alt="" />
                 </span>
               </div>
             </div>
@@ -404,18 +396,23 @@ const Lawyers = () => {
                   />
                 </div>
               </div>
-            
-              <div className="flex flex-wrap gap-5  mt-10">
-              <div>
-                        <label>Category</label>
-                        <br />
-          <select name="" id=""  className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={categoryId} onChange={(e)=> setCategoryId(e.target.value)}>
-                {category?.map((d, i)=>(
-                    <option value={d?._id}>{d?.name}</option>
 
-                ))}
-              </select>
-          </div>
+              <div className="flex flex-wrap gap-5  mt-10">
+                <div>
+                  <label>Category</label>
+                  <br />
+                  <select
+                    name=""
+                    id=""
+                    className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                  >
+                    {category?.map((d, i) => (
+                      <option value={d?._id}>{d?.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div>
                   <label>Bar registration Number</label>
                   <br />
@@ -479,7 +476,7 @@ const Lawyers = () => {
                   <MdOutlineFileDownload style={{ color: "white" }} />
                 </div>
               </div>
-              <div className="mt-10">
+              {/* <div className="mt-10">
                 <div className="font-semibold">Reviews & Ratings</div>
                 <div className="mt-5 flex gap-5">
                   <div className="w-[267px] h-[212px] rounded-xl shadow-2xl flex justify-center items-center flex-col gap-2">
@@ -535,7 +532,7 @@ const Lawyers = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex justify-end gap-5 mt-20 mr-5">
                 <div
@@ -706,15 +703,20 @@ const Lawyers = () => {
                           />
                         </div>
                         <div>
-                        <label>Category</label>
-                        <br />
-          <select name="" id=""  className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={categoryId} onChange={(e)=> setCategoryId(e.target.value)}>
-                {category?.map((d, i)=>(
-                    <option value={d?._id}>{d?.name}</option>
-
-                ))}
-              </select>
-          </div>
+                          <label>Category</label>
+                          <br />
+                          <select
+                            name=""
+                            id=""
+                            className="placeholder: block w-[264px] rounded-md border-0 py-1.5 pl-2 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            value={categoryId}
+                            onChange={(e) => setCategoryId(e.target.value)}
+                          >
+                            {category?.map((d, i) => (
+                              <option value={d?._id}>{d?.name}</option>
+                            ))}
+                          </select>
+                        </div>
                         <div>
                           <label>Bar registration Number</label>
                           <br />
@@ -901,6 +903,9 @@ const Lawyers = () => {
                     <th className="w-[200px] text-center text-[#6D6D6D]">
                       Status
                     </th>
+                    <th className="w-[200px] text-center text-[#6D6D6D]">
+                      Verification
+                    </th>
                     <th className="w-[200px] text-center text-[#6D6D6D]"></th>
                   </tr>
                 </thead>
@@ -947,42 +952,56 @@ const Lawyers = () => {
                             {item.status}
                           </span>
                         </td>
+                        <td className="w-[150px] h-[100px] flex justify-center items-center">
+                          <button
+                            onClick={() =>
+                              navigate(`/LawyerVerificaion/${item?._id}`)
+                            }
+                            className="bg-yellow-400 px-[14px] py-[8px] rounded-lg text-white"
+                          >
+                            Click
+                          </button>
+                        </td>
                         <td className=" text-center ">
                           <div className="flex">
                             <div
-                              onClick={()=> setDelete(item?._id)}
+                              onClick={() => setDelete(item?._id)}
                               className="cursor-pointer"
                             >
                               <img src={dltbtn} alt="" />
                             </div>
-                          {isDelete &&
-                          <>
-                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
-                              <div className="relative w-auto my-6 mx-auto max-w-5xl">
-                                <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
-                                  <div className="text-center font-semibold text-[20px]">
-                                    Confirm Delete Profile ?
-                                  </div>
-                                  <hr className="my-6" />
+                            {isDelete && (
+                              <>
+                                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                                  <div className="relative w-auto my-6 mx-auto max-w-5xl">
+                                    <div className="border-1 border-[#CACACA] rounded-lg relative py-4 flex flex-col w-[400px] h-[200px] bg-white outline-none focus:outline-none">
+                                      <div className="text-center font-semibold text-[20px]">
+                                        Confirm Delete Profile ?
+                                      </div>
+                                      <hr className="my-6" />
 
-                                  <div className="flex justify-center mt-5">
-                                    <button onClick={(e)=>handledelete(isDelete)} className="w-[120px] h-[40px]  text-black font-bold rounded-lg">
-                                      Yes
-                                    </button>
-                                    <button
-                                      onClick={() => setDelete(false)}
-                                      className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
-                                    >
-                                      Not Now
-                                    </button>
+                                      <div className="flex justify-center mt-5">
+                                        <button
+                                          onClick={(e) =>
+                                            handledelete(isDelete)
+                                          }
+                                          className="w-[120px] h-[40px]  text-black font-bold rounded-lg"
+                                        >
+                                          Yes
+                                        </button>
+                                        <button
+                                          onClick={() => setDelete(false)}
+                                          className="w-[120px] h-[40px] bg-[#0F2C64] text-white font-bold rounded-lg"
+                                        >
+                                          Not Now
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                            <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
-                          </>
-                            
-                            }
+                                <div className="opacity-10 fixed inset-0 z-40 bg-black"></div>
+                              </>
+                            )}
                             <div
                               onClick={(e) => {
                                 setEditlawyers(true);

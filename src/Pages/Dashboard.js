@@ -258,7 +258,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </Link>
-              <Link to="/services">
+              {/* <Link to="/services">
                 <div className="w-[350px] pb-2 shadow-lg">
                   <div className="text-2xl font-medium mt-5 ml-5">
                     Total Services
@@ -282,7 +282,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </Link> */}
               <Link to="/department">
                 <div className="w-[350px] pb-2 shadow-lg">
                   <div className="text-2xl font-medium mt-5 ml-5">

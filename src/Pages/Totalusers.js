@@ -442,7 +442,7 @@ const Totalusers = () => {
                         {item.totalConsultancy}
                       </td>
                       <td className="w-[50px] text-center">
-                        {item.status}
+                        {item.lawyerStatus ? "Active" : "Close"}
                       </td>
 
                       <td className="w-[50px] text-center text-[#094DB3]">

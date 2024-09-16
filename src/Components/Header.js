@@ -23,7 +23,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setfilter] = useState(false);
 
-  const fetchUser = async (id) => {
+  const fetchUser = async () => {
     const data = await fetchApiData(`${Baseurl}/api/v1/customer/getProfile`);
     console.log(data);
     setUserDetails(data?.data);
