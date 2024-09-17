@@ -35,6 +35,9 @@ import Language from "./Pages/Language";
 import Terms from "./Pages/Terms";
 import LawyerVerificaion from "./Pages/LawyerVerificaion";
 import UpdateNotification from "./Pages/UpdateNotification";
+import BookingTransaction from "./Pages/BookingTransaction";
+import Help from "./Pages/Help";
+import CreateHelp from "./Pages/CreateHelp";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +89,7 @@ const router = createBrowserRouter([
       },
       { path: "/meeting", element: <PrivateRoute element={<Meeting />} /> },
       { path: "/Booking", element: <PrivateRoute element={<Booking />} /> },
+      { path: ":id", element: <PrivateRoute element={<BookingTransaction />} /> },
       { path: "/services", element: <PrivateRoute element={<Services />} /> },
       { path: "/city", element: <PrivateRoute element={<City />} /> },
       { path: "/language", element: <PrivateRoute element={<Language />} /> },
@@ -103,6 +107,8 @@ const router = createBrowserRouter([
       },
       { path: "/Messages", element: <PrivateRoute element={<Messages />} /> },
       { path: "/Complaint", element: <PrivateRoute element={<Complaint />} /> },
+      { path: "/help", element: <PrivateRoute element={<Help />} /> },
+      { path: "/add-help", element: <PrivateRoute element={<CreateHelp />} /> },
       { path: "/privacy", element: <PrivateRoute element={<Privacy />} /> },
       { path: "/terms", element: <PrivateRoute element={<Terms />} /> },
       { path: "/History", element: <PrivateRoute element={<History />} /> },

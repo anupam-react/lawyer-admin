@@ -241,10 +241,10 @@ const Header = () => {
                           Terms & Conditinos
                         </li>
                         </Link>
-                        <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2">
+                        {/* <li className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2">
                           <img src={helpandsupport} alt="" />
                           Help & Support
-                        </li>
+                        </li> */}
                        
                         <li
                           className="p-2 hover:bg-[#0F2C64] hover:text-[white] cursor-pointer flex gap-2"

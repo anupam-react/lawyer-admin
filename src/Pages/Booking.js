@@ -5,12 +5,15 @@ import { Baseurl } from "../utlis/apiservices";
 import config, { headers } from "../utlis/config";
 import { useEffect, useState } from "react";
 import { fetchApiData, getDateFromISOString } from "../utlis";
+import { useNavigate } from "react-router-dom";
 
 const Booking = () => {
   const [selectedDiv, setSelectedDiv] = useState("Upcoming");
   const [upcomingdata, setUpcomingdata] = useState("");
   const [pastData, setPastdata] = useState("");
   const [cancelleddata, setCancelleddata] = useState("");
+
+  const navigate = useNavigate()
 
   //////////fetch upcomingbooking//////////
   async function fetchupcomingbooking() {
@@ -117,13 +120,14 @@ const Booking = () => {
                 <tbody>
                   {!!upcomingdata?.length && upcomingdata?.map((item) => (
                     <tr
-                      className="border-t-2 border-b-2 m-5 h-[80px]"
+                      className="border-t-2 border-b-2 m-5 h-[80px] cursor-pointer"
                       key={item._id}
+                      onClick={()=> navigate(`/Booking/${item?._id}`)}
                     >
                       <td className="text-left">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + "(" +item?.userId?.Id  + ")"}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
@@ -131,7 +135,7 @@ const Booking = () => {
                       </td>
 
                       <td className="text-center">
-                        {item.appointmentType}
+                        {item?.appointmentType === "video-call" ? "Video Call" : item?.appointmentType}
                       </td>
                       <td className="text-center">
                         {getDateFromISOString(item.appointmentDate)}
@@ -186,13 +190,14 @@ const Booking = () => {
                 <tbody>
                   {!!pastData?.length && pastData?.map((item) => (
                     <tr
-                      className="border-t-2 border-b-2 m-5 h-[80px]"
-                      key={item._Id}
+                    className="border-t-2 border-b-2 m-5 h-[80px] cursor-pointer"
+                    key={item._id}
+                    onClick={()=> navigate(`/Booking/${item?._id}`)}
                     >
                       <td className="text-left w-[250px]">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full" />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + "(" +item?.userId?.Id  + ")"}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
@@ -252,13 +257,14 @@ const Booking = () => {
                 <tbody>
                   {!!cancelleddata?.length && cancelleddata?.map((item) => (
                     <tr
-                      className="border-t-2 border-b-2 m-5 h-[80px]"
-                      key={item._Id}
+                    className="border-t-2 border-b-2 m-5 h-[80px] cursor-pointer"
+                    key={item._id}
+                    onClick={()=> navigate(`/Booking/${item?._id}`)}
                     >
                       <td className="text-left">
                         <div className="flex items-center gap-2">
                           <img src={item?.userId?.image} alt="" className="w-[42px] h-[42px] rounded-full"  />
-                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + (item?.userId?.Id)}
+                          {item?.userId?.fullName || item?.userId?.firstName + " " + item?.userId?.lastName + " " + "(" +item?.userId?.Id  + ")"}
                         </div>
                       </td>
                       <td className="w-[200px] text-center">
