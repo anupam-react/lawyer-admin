@@ -89,7 +89,7 @@ const router = createBrowserRouter([
       },
       { path: "/meeting", element: <PrivateRoute element={<Meeting />} /> },
       { path: "/Booking", element: <PrivateRoute element={<Booking />} /> },
-      { path: ":id", element: <PrivateRoute element={<BookingTransaction />} /> },
+      { path: "/Booking/:id", element: <PrivateRoute element={<BookingTransaction />} /> },
       { path: "/services", element: <PrivateRoute element={<Services />} /> },
       { path: "/city", element: <PrivateRoute element={<City />} /> },
       { path: "/language", element: <PrivateRoute element={<Language />} /> },
